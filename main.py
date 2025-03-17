@@ -1,92 +1,92 @@
-import tkinter as tk
-
-
-DEFAULT_INPUT = "10101010"
-PREDEFINED_RULES = [
-    "q0,0 -> q1,1,R",
-    "q0,1 -> q1,0,R",
-    "q1,0 -> q0,1,R",
-    "q1,1 -> q0,0,R",
-    "q0,_ -> q1,_,L",
-]
+import customtkinter as ctk
+from configs import UI, TAPE
 
 
 class TuringMachineApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Turing Machine Simulator")
+        self.root.title(UI["title"])
+        self.root.geometry(UI["size"])
 
-        self.tape = ["_"] * 21  # Tape with blank symbols
-        self.head_position = 10  # Head starts in the middle
-        self.state = "q0"  # Initial state
-        self.rules = {}  # Transition rules
-        self.running = False  # Controls automatic execution
-        self.rule_entries = []  # List of rule input fields
+        ctk.set_appearance_mode(UI["theme"])
+        ctk.set_default_color_theme(UI["colors"])
+
+        self.tape = [TAPE["sign"]] * 21
+        self.head_position = TAPE["position"]
+        self.state = "q0"
+        self.rules = {}
+        self.is_tape_running = False
+        self.rule_entries = []
 
         self.create_widgets()
+
+        # update the UI
         self.update_tape_display()
+
         self.predefine_rules()
         self.read_rules()
 
-    def create_widgets(self):
-        # Entry field for tape input
-        self.input_entry = tk.Entry(self.root, width=30)
-        self.input_entry.grid(row=0, column=0, columnspan=3)
-        self.input_entry.insert(0, DEFAULT_INPUT)
+        self.set_tape()
 
-        tk.Button(self.root, text="Set Tape", command=self.set_tape).grid(
-            row=0, column=3
+    def create_widgets(self):
+        self.input_entry = ctk.CTkEntry(self.root, width=200)
+        self.input_entry.grid(row=0, column=0, columnspan=3, pady=5)
+        self.input_entry.insert(0, TAPE["input"])
+
+        ctk.CTkButton(self.root, text="Set Tape", command=self.set_tape).grid(
+            row=0, column=3, padx=5, pady=5
         )
 
-        # Tape display
-        self.tape_frame = tk.Frame(self.root)
-        self.tape_frame.grid(row=1, column=0, columnspan=5)
+        self.tape_frame = ctk.CTkFrame(self.root)
+        self.tape_frame.grid(row=1, column=0, columnspan=5, pady=5)
         self.tape_labels = []
 
         for i in range(21):
-            label = tk.Label(
+            label = ctk.CTkLabel(
                 self.tape_frame,
                 text="_",
-                width=3,
+                width=20,
                 font=("Courier", 14),
-                relief=tk.SOLID,
+                fg_color=("white", "gray20"),
+                corner_radius=5,
             )
-            label.grid(row=0, column=i)
+            label.grid(row=0, column=i, padx=2)
             self.tape_labels.append(label)
 
-        # Control buttons
-        tk.Button(self.root, text="← Left", command=self.move_left).grid(
-            row=2, column=0
+        ctk.CTkButton(self.root, text="← Left", command=self.move_left).grid(
+            row=2, column=0, pady=5
         )
-        tk.Button(self.root, text="Right →", command=self.move_right).grid(
-            row=2, column=1
+        ctk.CTkButton(self.root, text="Right →", command=self.move_right).grid(
+            row=2, column=1, pady=5
         )
-        tk.Button(self.root, text="Step", command=self.step).grid(row=2, column=2)
-        tk.Button(self.root, text="Run", command=self.run).grid(row=2, column=3)
-        tk.Button(self.root, text="Stop", command=self.stop).grid(row=2, column=4)
-
-        # Rule input section
-        self.rules_frame = tk.Frame(self.root)
-        self.rules_frame.grid(row=3, column=0, columnspan=5)
-
-        # for _ in range(5):
-        #     self.add_rule_input()
-
-        tk.Button(self.root, text="Add a New Rule", command=self.add_rule_input).grid(
-            row=4, column=0, columnspan=5
+        ctk.CTkButton(self.root, text="Step", command=self.step).grid(
+            row=2, column=2, pady=5
+        )
+        ctk.CTkButton(self.root, text="Run", command=self.run).grid(
+            row=2, column=3, pady=5
+        )
+        ctk.CTkButton(self.root, text="Stop", command=self.stop).grid(
+            row=2, column=4, pady=5
         )
 
-        self.status_label = tk.Label(self.root, text=f"State: {self.state}")
-        self.status_label.grid(row=5, column=0, columnspan=5)
+        self.rules_frame = ctk.CTkFrame(self.root)
+        self.rules_frame.grid(row=3, column=0, columnspan=5, pady=10)
+
+        ctk.CTkButton(
+            self.root, text="Add a New Rule", command=self.add_rule_input
+        ).grid(row=4, column=0, columnspan=5, pady=5)
+
+        self.status_label = ctk.CTkLabel(self.root, text=f"State: {self.state}")
+        self.status_label.grid(row=5, column=0, columnspan=5, pady=5)
 
     def update_tape_display(self):
         for i, symbol in enumerate(self.tape):
             if i == self.head_position:
-                self.tape_labels[i]["bg"] = "yellow"
+                self.tape_labels[i].configure(fg_color="yellow")
             else:
-                self.tape_labels[i]["bg"] = "white"
-            self.tape_labels[i]["text"] = symbol
-        self.status_label.config(text=f"State: {self.state}")
+                self.tape_labels[i].configure(fg_color=("white", "gray20"))
+            self.tape_labels[i].configure(text=symbol)
+        self.status_label.configure(text=f"State: {self.state}")
 
     def set_tape(self):
         input_text = self.input_entry.get()
@@ -106,20 +106,19 @@ class TuringMachineApp:
             self.update_tape_display()
 
     def add_rule_input(self):
-        rule_entry = tk.Entry(self.rules_frame, width=40)
-        rule_entry.pack()
+        rule_entry = ctk.CTkEntry(self.rules_frame, width=300)
+        rule_entry.pack(pady=2)
         self.rule_entries.append(rule_entry)
 
     def predefine_rules(self):
-        for rule in PREDEFINED_RULES:
-            rule_entry = tk.Entry(self.rules_frame, width=40)
-            rule_entry.pack()
+        for rule in TAPE["rules"]:
+            rule_entry = ctk.CTkEntry(self.rules_frame, width=300)
+            rule_entry.pack(pady=2)
             rule_entry.insert(0, rule)
             self.rule_entries.append(rule_entry)
 
     def read_rules(self):
         self.rules.clear()
-
         for entry in self.rule_entries:
             rule_text = entry.get().strip()
             try:
@@ -133,56 +132,36 @@ class TuringMachineApp:
 
     def step(self):
         self.read_rules()
-
         current_symbol = self.tape[self.head_position]
-        print("🐍 current_symbol", current_symbol)
-
-        print("🐍 self.rules", self.rules)
-
         if (self.state, current_symbol) in self.rules:
-
             next_state, write_symbol, move = self.rules[(self.state, current_symbol)]
-
             self.tape[self.head_position] = write_symbol
-
             self.state = next_state
             if move == "L":
                 self.move_left()
             elif move == "R":
                 self.move_right()
             self.update_tape_display()
-        else:
-            print("No rule for this state and symbol!")
 
     def run(self):
-        self.running = True
+        self.is_tape_running = True
         self.execute()
 
     def stop(self):
-        self.running = False
+        self.is_tape_running = False
 
     def execute(self):
-        print(
-            "🐍 self.running",
-            self.running,
-        )
-
-        if self.running:
-            print("if")
-            print("🐍 self.state", self.state)
-            print("🐍 self.tape[self.head_position]", self.tape[self.head_position])
-
-            print("🐍 self.rules", self.rules)
-            if (self.state, self.tape[self.head_position]) in self.rules:
-                print("if if")
-                self.step()
-                self.root.after(500, self.execute)  # Delay for visibility
-            else:
-                print("else")
-                self.running = False  # Stop when no rule applies
+        if (
+            self.is_tape_running
+            and (self.state, self.tape[self.head_position]) in self.rules
+        ):
+            self.step()
+            self.root.after(500, self.execute)
+        else:
+            self.is_tape_running = False
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
     app = TuringMachineApp(root)
     root.mainloop()

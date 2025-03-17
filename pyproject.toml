@@ -1,0 +1,20 @@
+[project]
+name = "turing-machine"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Ca-tt",email = "damir96.lukyanenko@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "customtkinter (>=5.2.2,<6.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

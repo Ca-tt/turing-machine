@@ -1,15 +1,17 @@
-import customtkinter as ctk
+from customtkinter import CTk, CTkButton, CTkEntry, CTkFrame, CTkLabel, set_appearance_mode, set_default_color_theme
+from file_saver import FileSaver
 from config import UI, TAPE, TEXT, COLORS
+from re import sub
 
 
 class TuringMachineApp:
-    def __init__(self, root):
+    def __init__(self, root: CTk):
         self.root = root
         self.root.title(UI["title"])
         self.root.geometry(UI["size"])
 
-        ctk.set_appearance_mode(UI["theme"])
-        ctk.set_default_color_theme(UI["colors"])
+        set_appearance_mode(UI["theme"])
+        set_default_color_theme(UI["colors"])
 
         self.tape: list[str] = [TAPE["sign"]] * TAPE["cells"]
         self.head_position: int = TAPE["position"]
@@ -19,6 +21,8 @@ class TuringMachineApp:
 
         self.is_tape_running = False
         self.rule_entries = []
+
+        self.FileSaver = FileSaver()
 
         self.create_widgets()
 
@@ -32,23 +36,43 @@ class TuringMachineApp:
 
 
     def create_widgets(self):
+        #? [navbar]
+        self.navbar = CTkFrame(self.root, fg_color=COLORS["navbar"]["background"])
+        self.navbar.grid(row=UI["rows"]["navbar"], column=0, columnspan=5, sticky="ew")
+
+        #? [navbar] buttons 
+        #? save
+        CTkButton(
+            self.navbar, text="Save", fg_color=COLORS["navbar"]["buttons"], height=UI["navbar"]["buttons"]["height"], width=UI["navbar"]["buttons"]["width"], command=self.save_to_file
+        ).grid(row=UI["rows"]["navbar"], column=0, padx=UI["navbar"]["buttons"]["padx"], pady=0)
+
+        #? load
+        CTkButton(
+            self.navbar, text="Load", fg_color=COLORS["navbar"]["buttons"], height=UI["navbar"]["buttons"]["height"], width=UI["navbar"]["buttons"]["width"], command=self.load_from_file
+        ).grid(row=UI["rows"]["navbar"], column=1, padx=UI["navbar"]["buttons"]["padx"], pady=0)
+
+        #? quit
+        CTkButton(
+            self.navbar, text="Exit", fg_color=COLORS["navbar"]["buttons"], height=UI["navbar"]["buttons"]["height"], width=UI["navbar"]["buttons"]["width"], command=self.root.destroy
+        ).grid(row=UI["rows"]["navbar"], column=2, padx=UI["navbar"]["buttons"]["padx"], pady=0)
+
         # ? [input] field for numbers or characters
-        self.input_entry = ctk.CTkEntry(self.root, width=200)
-        self.input_entry.grid(row=0, column=0, columnspan=3, pady=5)
+        self.input_entry = CTkEntry(self.root, width=200)
+        self.input_entry.grid(row=UI["rows"]["input"], column=0, columnspan=3, pady=20)
         self.input_entry.insert(0, TAPE["input"])
 
         #? [set tape] signs button
-        ctk.CTkButton(
+        CTkButton(
             self.root, text=TEXT["button"]["set_tape"], command=self.set_tape_text
-        ).grid(row=0, column=3, padx=5, pady=5)
+        ).grid(row=UI["rows"]["input"], column=3, padx=5, pady=5)
 
-        self.tape_frame = ctk.CTkFrame(self.root)
-        self.tape_frame.grid(row=1, column=0, columnspan=5, pady=5)
+        self.tape_frame = CTkFrame(self.root)
+        self.tape_frame.grid(row=UI["rows"]["tape"], column=0, columnspan=5, pady=10)
         self.tape_labels = []
 
         #? create tape cells
         for i in range(TAPE["cells"]):
-            label = ctk.CTkLabel(
+            label = CTkLabel(
                 self.tape_frame,
                 text=TAPE["sign"],
                 width=20,
@@ -56,41 +80,41 @@ class TuringMachineApp:
                 fg_color=("white", COLORS["tape"]["cell"]),
                 corner_radius=5,
             )
-            label.grid(row=0, column=i, padx=2)
+            label.grid(row=UI["rows"]["tape"], column=i, padx=2)
             self.tape_labels.append(label)
 
         #? step [left] / [right] buttons
-        ctk.CTkButton(
+        CTkButton(
             self.root, text=TEXT["button"]["step_left"], command=self.move_left
-        ).grid(row=2, column=0, pady=5)
+        ).grid(row=UI["rows"]["buttons"], column=0, pady=5)
 
-        ctk.CTkButton(
+        CTkButton(
             self.root, text=TEXT["button"]["step_right"], command=self.move_right
-        ).grid(row=2, column=1, pady=5)
+        ).grid(row=UI["rows"]["buttons"], column=1, pady=5)
         
         #? [step], [run], [stop] butons
-        ctk.CTkButton(self.root, text=TEXT["button"]["step"], command=self.make_step).grid(
-            row=2, column=2, pady=5
+        CTkButton(self.root, text=TEXT["button"]["step"], command=self.make_step).grid(
+            row=UI["rows"]["buttons"], column=2, pady=5
         )
 
-        ctk.CTkButton(self.root, text=TEXT["button"]["run"], command=self.run).grid(
-            row=2, column=3, pady=5
+        CTkButton(self.root, text=TEXT["button"]["run"], command=self.run).grid(
+            row=UI["rows"]["buttons"], column=3, pady=5
         )
         
-        ctk.CTkButton(self.root, text=TEXT["button"]["stop"], command=self.stop).grid(
-            row=2, column=4, pady=5
+        CTkButton(self.root, text=TEXT["button"]["stop"], command=self.stop).grid(
+            row=UI["rows"]["buttons"], column=4, pady=5
         )
 
-        self.rules_frame = ctk.CTkFrame(self.root)
-        self.rules_frame.grid(row=3, column=0, columnspan=5, pady=10)
+        self.rules_frame = CTkFrame(self.root)
+        self.rules_frame.grid(row=UI["rows"]["rules"], column=0, columnspan=5, pady=10)
 
         #? [new rule] button
-        ctk.CTkButton(
+        CTkButton(
             self.root, text=TEXT["button"]["new_rule"], command=self.add_rule_input
-        ).grid(row=4, column=0, columnspan=5, pady=5)
+        ).grid(row=UI["rows"]["new_rule_button"], column=0, columnspan=5, pady=5)
 
-        self.status_label = ctk.CTkLabel(self.root, text=f"State: {self.state}")
-        self.status_label.grid(row=5, column=0, columnspan=5, pady=5)
+        self.status_label = CTkLabel(self.root, text=f"State: {self.state}")
+        self.status_label.grid(row=UI["rows"]["state_label"], column=0, columnspan=5, pady=5)
 
 
     #? update cells color and symbol
@@ -126,14 +150,14 @@ class TuringMachineApp:
 
 
     def add_rule_input(self):
-        rule_entry = ctk.CTkEntry(self.rules_frame, width=300)
+        rule_entry = CTkEntry(self.rules_frame, width=300)
         rule_entry.pack(pady=2)
         self.rule_entries.append(rule_entry)
 
 
     def predefine_rules(self):
         for rule in TAPE["rules"]:
-            rule_entry = ctk.CTkEntry(self.rules_frame, width=300)
+            rule_entry = CTkEntry(self.rules_frame, width=300)
             rule_entry.pack(pady=2)
             rule_entry.insert(0, rule)
             self.rule_entries.append(rule_entry)
@@ -141,6 +165,8 @@ class TuringMachineApp:
     #? goes through rules entries and get rules data
     def read_rules(self):
         self.rules.clear()
+
+        print("rule fields:", len(self.rule_entries))
 
         for entry in self.rule_entries:
             rule_text = entry.get().strip()
@@ -157,8 +183,9 @@ class TuringMachineApp:
                 right = parts[1].strip()
                 next_state, write_symbol, move = right.split(",")
                 
+                #? tuple will save only unique values
                 self.rules[(state, read_symbol)] = (next_state, write_symbol, move)
-                # print("🐍 show self.rules (tuples)", self.rules)
+                print("🐍 show self.rules (tuples)", self.rules)
             except:
                 print(f"Invalid rule format: {rule_text}")
 
@@ -208,7 +235,52 @@ class TuringMachineApp:
             self.is_tape_running = False
 
 
+    #? save / load from file logic wrappers
+    def save_to_file(self):
+        input_string = self.input_entry.get()
+        #? read rules to update self.rules
+        self.read_rules()
+        self.FileSaver.save_to_file(input_string, self.rules)
+
+
+    def load_from_file(self):
+        input_string, loaded_rules = self.FileSaver.load_from_file()
+        print("🐍 input_string", input_string)
+        print("🐍  loaded_rules ", loaded_rules)
+
+        if input_string is not None:
+            # Set input field text
+            self.input_entry.delete(0, "end")
+            self.input_entry.insert(0, input_string)
+
+        if loaded_rules is not None:
+            # Set rules
+            self.rules = loaded_rules
+
+            # Clear existing rule entries, set new texts for them
+            for entry, (left_part, right_part) in zip(self.rule_entries, self.rules.items()):
+                # print("🐍  key",left_part)
+                # print("🐍  value",right_part)
+                
+                regexp = r"['() ]"
+
+                old_state = sub(regexp, "", left_part[0])
+                read_value = sub(regexp, "", left_part[1])
+
+                new_state = right_part[0]
+                write_value = right_part[1]
+
+                direction = right_part[2]
+
+                rule_text = f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
+                entry.delete(0, "end")
+                entry.insert(0, rule_text)
+
+            self.set_tape_text()
+
+
+
 if __name__ == "__main__":
-    root = ctk.CTk()
+    root = CTk()
     app = TuringMachineApp(root)
     root.mainloop()

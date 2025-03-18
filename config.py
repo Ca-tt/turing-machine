@@ -10,7 +10,7 @@ TAPE = {
     "input": "10101010",
     "sign": "_",
     "position": 10,
-
+    "cells": 21,
     "rules": [
         "q0,0 -> q1,1,R",
         "q0,1 -> q1,0,R",
@@ -18,4 +18,25 @@ TAPE = {
         "q1,1 -> q0,0,R",
         "q0,_ -> q1,_,L",
     ],
+}
+
+TEXT = {
+    "button": {
+        "set_tape": "Set Tape",
+        "step": "Step",
+        "step_left": "← Left",
+        "step_right": "Right →",
+        
+        "run": "Run",
+        "stop": "Stop",
+
+        "new_rule": "Add a New Rule",
+    }
+}
+
+COLORS = {
+    "tape": {
+        "cell": "gray20",
+        "highlight": "yellow", 
+    }
 }

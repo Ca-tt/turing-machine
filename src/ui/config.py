@@ -2,7 +2,7 @@
 UI = {
     "theme": "light",  # dark, light
     "colors": "green",  # green, blue, dark-blue
-    "size": "700x400",
+    "size": "750x450",
     "title": "Turing Machine (by Roman Gluschenko)",
     "rows": {
         "navbar": 0,

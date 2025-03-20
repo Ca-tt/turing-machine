@@ -2,6 +2,10 @@
 UI = {
     "theme": "light",  # dark, light
     "colors": "green",  # green, blue, dark-blue
+    "app": {
+        "width": 750,
+        "height": 450,
+    },
     "size": "750x450",
     "title": "Turing Machine (by Roman Gluschenko)",
     "rows": {
@@ -20,15 +24,21 @@ UI = {
             "padx": 5,
             "pady": 0,
         }
-    }
+    },
+    "tape": {
+        "height": 30,
+        "column": {
+            "start": 1,
+            "end": 3,
+        },
+        "scrollbar": {"height": 13, "left_shift": 450},
+    },
 }
 
 TAPE = {
     "sign": "_",
     "position": 10,
-
     "input": "abaabbaaa",
-    
     "cells": 21,
     "rules": [
         "q0,a -> q1,b,R",
@@ -45,10 +55,8 @@ TEXT = {
         "step": "Step",
         "step_left": "← Left",
         "step_right": "Right →",
-        
         "run": "Run",
         "stop": "Stop",
-
         "new_rule": "Add a New Rule",
     }
 }
@@ -56,10 +64,10 @@ TEXT = {
 COLORS = {
     "tape": {
         "cell": "gray20",
-        "highlight": "yellow", 
+        "highlight": "yellow",
     },
     "navbar": {
         "background": "white",
         "buttons": "gray80",
-    }
+    },
 }

@@ -1,3 +1,5 @@
+from re import sub
+
 from customtkinter import (
     CTk,
     CTkButton,
@@ -7,10 +9,17 @@ from customtkinter import (
     set_appearance_mode,
     set_default_color_theme,
 )
-from file_saver import FileSaver
+
+#? configs
 from ui.config import UI, TAPE, TEXT, COLORS
+
+#? classes
+
+from file_saver import FileSaver
+
+#? custom frames for UI
 from ui.scrollable_frame import VerticalScrollableFrame
-from re import sub
+from ui.xy_frame import XYFrame
 
 
 class TuringMachineApp:
@@ -28,16 +37,15 @@ class TuringMachineApp:
 
         self.FileSaver = FileSaver()
 
+        # set UI
         self.set_ui_settings()
         self.create_widgets()
 
-        # update the UI
+        # update UI
         self.update_tape_display()
-
-        # self.predefine_rules()
         self.read_rules()
-
         self.set_tape_text()
+
 
     def set_ui_settings(self):
         set_appearance_mode(UI["theme"])
@@ -109,9 +117,11 @@ class TuringMachineApp:
             self.app, text=TEXT["button"]["set_tape"], command=self.set_tape_text
         ).grid(row=UI["rows"]["input"], column=3, padx=5, pady=5)
 
-        self.tape_frame = CTkFrame(self.app)
-        self.tape_frame.grid(row=UI["rows"]["tape"], column=0, columnspan=5, pady=10)
         self.tape_labels = []
+
+        #? tape frame
+        self.tape_frame = XYFrame(self.app, height=UI["tape"]["height"], scrollbar_width=UI["tape"]["scrollbar"]["height"])
+        self.tape_frame.grid(row=UI["rows"]["tape"], column=UI["tape"]["column"]["start"], columnspan=UI["tape"]["column"]["end"], padx=2, sticky="ew")
 
         # ? create tape cells
         for i in range(TAPE["cells"]):
@@ -148,7 +158,7 @@ class TuringMachineApp:
             row=UI["rows"]["buttons"], column=4, pady=5
         )
 
-        # self.rules_frame = CTkFrame(self.app)
+        #? vertical frame
         self.rules_frame = VerticalScrollableFrame(self.app)
         self.rules_frame.grid(row=UI["rows"]["rules"], column=0, columnspan=5, pady=10)
 
@@ -175,6 +185,7 @@ class TuringMachineApp:
             self.tape_labels[i].configure(text=symbol)
         self.status_label.configure(text=f"State: {self.state}")
 
+
     def set_tape_text(self):
         input_text = self.input_entry.get()
         for i, char in enumerate(input_text):
@@ -182,27 +193,19 @@ class TuringMachineApp:
                 self.tape[self.head_position - len(input_text) // 2 + i] = char
         self.update_tape_display()
 
+
     def move_left(self):
         if self.head_position > 0:
             self.head_position -= 1
             self.update_tape_display()
+
 
     def move_right(self):
         if self.head_position < len(self.tape) - 1:
             self.head_position += 1
             self.update_tape_display()
 
-    # def add_rule_input(self):
-    #     rule_entry = CTkEntry(self.rules_frame, width=300)
-    #     rule_entry.pack(pady=2)
-    #     self.rule_entries.append(rule_entry)
-
-    # def predefine_rules(self):
-    #     for rule in TAPE["rules"]:
-    #         rule_entry = CTkEntry(self.rules_frame, width=300)
-    #         rule_entry.pack(pady=2)
-    #         rule_entry.insert(0, rule)
-    #         self.rule_entries.append(rule_entry)
+  
 
     # ? goes through rules entries and get rules data
     def read_rules(self):
@@ -301,7 +304,6 @@ class TuringMachineApp:
             ):
                 # print("🐍  key",left_part)
                 # print("🐍  value",right_part)
-
                 regexp = r"['() ]"
 
                 old_state = sub(regexp, "", left_part[0])

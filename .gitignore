@@ -1,5 +1,9 @@
-todo.md
-test.py
+# folders
 test/
 src/__pycache__
 __pycache__
+files/
+
+# files
+todo.md
+test.py

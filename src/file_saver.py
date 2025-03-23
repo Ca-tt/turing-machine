@@ -37,3 +37,50 @@ class FileSaver:
         except Exception as e:
             print(f"Error loading file: {e}")
             return None, None
+        
+
+    # ? save / load from file logic wrappers
+    def _save_to_file(self):
+        input_string = self.input_entry.get()
+        # ? read rules to update self.rules
+        self.read_rules()
+        self.save_to_file(input_string, self.rules)
+
+
+    def _load_from_file(self):
+        input_string, loaded_rules = self.load_from_file()
+        print("🐍 input_string", input_string)
+        print("🐍  loaded_rules ", loaded_rules)
+
+        if input_string is not None:
+            # Set input field text
+            self.input_entry.delete(0, "end")
+            self.input_entry.insert(0, input_string)
+
+        if loaded_rules is not None:
+            # Set rules
+            self.rules = loaded_rules
+
+            # Clear existing rule entries, set new texts for them
+            for entry, (left_part, right_part) in zip(
+                self.rule_entries, self.rules.items()
+            ):
+                # print("🐍  key",left_part)
+                # print("🐍  value",right_part)
+                regexp = r"['() ]"
+
+                old_state = sub(regexp, "", left_part[0])
+                read_value = sub(regexp, "", left_part[1])
+
+                new_state = right_part[0]
+                write_value = right_part[1]
+
+                direction = right_part[2]
+
+                rule_text = (
+                    f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
+                )
+                entry.delete(0, "end")
+                entry.insert(0, rule_text)
+
+            self.set_tape_text()

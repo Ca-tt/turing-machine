@@ -1,11 +1,7 @@
 # settings
 UI = {
-    "theme": "light",  # dark, light
+    "theme": "dark",  # dark, light
     "colors": "green",  # green, blue, dark-blue
-    "app": {
-        "width": 750,
-        "height": 450,
-    },
     "size": "750x450",
     "title": "Turing Machine (by Roman Gluschenko)",
     "rows": {

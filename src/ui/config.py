@@ -1,92 +1,10 @@
-from typing import TypedDict, Literal, Dict, List
-
-class Rows(TypedDict):
-    navbar: int
-    input: int
-    tape: int
-    buttons: int
-    rules: int
-    new_rule_button: int
-    state_label: int
-
-class ButtonSize(TypedDict):
-    width: int
-    height: int
-    padx: int
-    pady: int
-
-class Navbar(TypedDict):
-    buttons: ButtonSize
-
-class ColumnRange(TypedDict):
-    start: int
-    end: int
-
-class Scrollbar(TypedDict):
-    height: int
-    left_shift: int
-
-class TapeUI(TypedDict):
-    height: int
-    column: ColumnRange
-    scrollbar: Scrollbar
-
-class UIConfig(TypedDict):
-    theme: Literal["dark", "light"]
-    colors: Literal["green", "blue", "dark-blue"]
-    size: str
-    title: str
-    rows: Rows
-    navbar: Navbar
-    tape: TapeUI
-
-class TapeConfig(TypedDict):
-    sign: str
-    position: int
-    input: str
-    cells: int
-    rules: List[str]
-
-class ButtonText(TypedDict):
-    set_tape: str
-    step: str
-    step_left: str
-    step_right: str
-    run: str
-    stop: str
-    new_rule: str
-
-class TapeError(TypedDict):
-    too_many_symbols: str
-
-class TapeErrors(TypedDict):
-    input: TapeError
-
-class ErrorMessages(TypedDict):
-    tape: TapeErrors
-
-class TextConfig(TypedDict):
-    button: ButtonText
-    erorrs: ErrorMessages
-
-class TapeColors(TypedDict):
-    cell: str
-    highlight: str
-
-class NavbarColors(TypedDict):
-    background: str
-    buttons: str
-
-class ColorsConfig(TypedDict):
-    tape: TapeColors
-    navbar: NavbarColors
-
+from custom_types.configT import *
 
 # settings
 UI: UIConfig = {
     "theme": "dark",  # dark, light
     "colors": "green",  # green, blue, dark-blue
-    "size": "750x450",
+    "size": "750x480",
     "title": "Turing Machine (by Roman Gluschenko)",
     "rows": {
         "navbar": 0,
@@ -118,7 +36,8 @@ UI: UIConfig = {
 TAPE: TapeConfig = {
     "sign": "_",
     "position": 10,
-    "input": "aba",
+    "state": "q0",
+    "input": "ababbbaabaaab",
     "cells": 21,
     "rules": [
         "q0,a -> q1,b,R",
@@ -139,11 +58,14 @@ TEXT: TextConfig = {
         "stop": "Stop",
         "new_rule": "Add a New Rule",
     },
-    "erorrs": {
+    "errors": {
         "tape": {
             "input": {
                 "too_many_symbols": "You've entered too many symbols, please shorten your input or add additional cells",
             }
+        },
+        "rules": {
+            "invalid_rule": f"You rule is uncorrect, please double check it: "
         }
     }
 }

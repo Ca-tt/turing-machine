@@ -13,10 +13,14 @@ from ui.xy_frame import XYFrame
 # ? configs
 from ui.config import UI, TAPE, TEXT, COLORS
 
+#? parts
+from ui.app import App, app
+from turing.rules import Rules
+
 
 class Tape:
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
+        self.app = app._app
 
         self.tape_symbols: list[str] = [TAPE["sign"]] * TAPE["cells"]
         self.head_position: int = TAPE["position"]
@@ -26,6 +30,10 @@ class Tape:
 
         # ? widgets
         self.cells: list[CTkLabel] = []  # tape labels
+
+        #? parts
+        self.Rules = Rules()
+
 
     def create_widgets(self):
         widgets["tape"]["frame"] = XYFrame(
@@ -105,7 +113,7 @@ class Tape:
             if index < tape_length:
                 self.tape_symbols[self.head_position - symbols_length // 2 + index] = symbol
             if index > tape_length:
-                print(TEXT["erorrs"]["tape"]["input"]["too_many_symbols"])
+                print(TEXT["errors"]["tape"]["input"]["too_many_symbols"])
 
         self.update_cells()
 
@@ -145,7 +153,7 @@ class Tape:
     def run_until_stop(self):
         if (
             self.is_running
-            and (self.state, self.tape_symbols[self.head_position]) in self.rules
+            and (self.state, self.tape_symbols[self.head_position]) in self.Rules.rules
         ):
             self.make_step()
             self.app.after(500, self.run_until_stop)
@@ -153,13 +161,13 @@ class Tape:
             self.is_running = False
 
     def make_step(self):
-        self.read_rules()
+        self.Rules.read_rules()
 
         current_symbol = self.tape_symbols[self.head_position]
 
-        if (self.state, current_symbol) in self.rules:
+        if (self.state, current_symbol) in self.Rules.rules:
             # ? get (next state, write symbol, direction) tuple
-            next_state, write_symbol, move = self.rules[(self.state, current_symbol)]
+            next_state, write_symbol, move = self.Rules.rules[(self.state, current_symbol)]
 
             # ? set next symbol for the new cell
             self.tape_symbols[self.head_position] = write_symbol
@@ -173,14 +181,14 @@ class Tape:
             elif move == "R":
                 self.move_right()
 
-            self.update_tape_display()
+            self.update_cells()
 
     def move_left(self):
         if self.head_position > 0:
             self.head_position -= 1
-            self.update_tape_display()
+            self.update_cells()
 
     def move_right(self):
         if self.head_position < len(self.tape_symbols) - 1:
             self.head_position += 1
-            self.update_tape_display()
+            self.update_cells()

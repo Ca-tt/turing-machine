@@ -27,14 +27,13 @@ class Tape:
         # ? widgets
         self.cells: list[CTkLabel] = []  # tape labels
 
-
     def create_widgets(self):
-        self.tape_frame = XYFrame(
+        widgets["tape"]["frame"] = XYFrame(
             self.app,
             height=UI["tape"]["height"],
             scrollbar_width=UI["tape"]["scrollbar"]["height"],
         )
-        self.tape_frame.grid(
+        widgets["tape"]["frame"].grid(
             row=UI["rows"]["tape"],
             column=UI["tape"]["column"]["start"],
             columnspan=UI["tape"]["column"]["end"],
@@ -43,9 +42,11 @@ class Tape:
         )
 
         # ? [input] field for numbers or characters
-        self.input_entry = CTkEntry(self.app, width=200)
-        self.input_entry.grid(row=UI["rows"]["input"], column=0, columnspan=3, pady=20)
-        self.input_entry.insert(0, TAPE["input"])
+        widgets["tape"]["symbols_input"] = CTkEntry(self.app, width=200)
+        widgets["tape"]["symbols_input"].grid(
+            row=UI["rows"]["input"], column=0, columnspan=3, pady=20
+        )
+        widgets["tape"]["symbols_input"].insert(0, TAPE["input"])
 
         self.create_cells()
 
@@ -55,7 +56,7 @@ class Tape:
         ).grid(row=UI["rows"]["input"], column=3, padx=5, pady=5)
 
         # ? step [left] / [right] buttons
-        widgets["tape"]["buttons"]["move_left"] =CTkButton(
+        widgets["tape"]["buttons"]["move_left"] = CTkButton(
             self.app, text=TEXT["button"]["step_left"], command=self.move_left
         ).grid(row=UI["rows"]["buttons"], column=0, pady=5)
 
@@ -64,23 +65,23 @@ class Tape:
         ).grid(row=UI["rows"]["buttons"], column=1, pady=5)
 
         # ? [step], [run], [stop] butons
-        widgets["tape"]["buttons"]["step"] = CTkButton(self.app, text=TEXT["button"]["step"], command=self.make_step).grid(
-            row=UI["rows"]["buttons"], column=2, pady=5
-        )
+        widgets["tape"]["buttons"]["step"] = CTkButton(
+            self.app, text=TEXT["button"]["step"], command=self.make_step
+        ).grid(row=UI["rows"]["buttons"], column=2, pady=5)
 
-        widgets["tape"]["buttons"]["run"] = CTkButton(self.app, text=TEXT["button"]["run"], command=self.run).grid(
-            row=UI["rows"]["buttons"], column=3, pady=5
-        )
+        widgets["tape"]["buttons"]["run"] = CTkButton(
+            self.app, text=TEXT["button"]["run"], command=self.run
+        ).grid(row=UI["rows"]["buttons"], column=3, pady=5)
 
-        widgets["tape"]["buttons"]["stop"] = CTkButton(self.app, text=TEXT["button"]["stop"], command=self.stop).grid(
-            row=UI["rows"]["buttons"], column=4, pady=5
-        )
+        widgets["tape"]["buttons"]["stop"] = CTkButton(
+            self.app, text=TEXT["button"]["stop"], command=self.stop
+        ).grid(row=UI["rows"]["buttons"], column=4, pady=5)
 
     def create_cells(self):
         # ? create tape cells
         for i in range(TAPE["cells"]):
             label = CTkLabel(
-                self.tape_frame,
+                widgets["tape"]["frame"],
                 text=TAPE["sign"],
                 width=20,
                 font=("Courier", 14),
@@ -90,12 +91,30 @@ class Tape:
             label.grid(row=UI["rows"]["tape"], column=i, padx=2)
             self.cells.append(label)
 
+
     def set_cells_text(self):
-        input_text = self.input_entry.get()
-        for i, char in enumerate(input_text):
-            if i < len(self.tape_symbols):
-                self.tape_symbols[self.head_position - len(input_text) // 2 + i] = char
+        #? clear previous input
+        self.clear_cells()
+
+        symbols = list(widgets["tape"]["symbols_input"].get())
+        tape_length = len(self.cells)
+        symbols_length = len(symbols) 
+
+        for index, symbol in enumerate(symbols):
+            # ensures if input is not too long
+            if index < tape_length:
+                self.tape_symbols[self.head_position - symbols_length // 2 + index] = symbol
+            if index > tape_length:
+                print(TEXT["erorrs"]["tape"]["input"]["too_many_symbols"])
+
         self.update_cells()
+
+
+    def clear_cells(self):
+        for i, cell in enumerate(self.cells):
+            self.tape_symbols[i] = "_"
+            cell.configure(text="_")
+
 
     # ? update cells color and symbol
     def update_cells(self):

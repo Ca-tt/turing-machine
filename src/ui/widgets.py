@@ -11,7 +11,7 @@ class NavbarWidgets(TypedDict):
 
 class TapeWidgets(TypedDict):
     frame: XYFrame
-    input: CTkEntry
+    symbols_input: CTkEntry
     buttons: dict[str, CTkButton]
     cells: list[CTkLabel]
     state: CTkEntry

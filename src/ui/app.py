@@ -51,7 +51,7 @@ class App:
             pady=0,
         )
 
-        widgets["tape"]["state"] = CTkLabel(self._app, text=f"State: {TAPE["state"]}")
+        widgets["tape"]["state"] = CTkLabel(self._app, text=f"State: {TAPE['state']}")
         widgets["tape"]["state"].grid(
             row=UI["rows"]["state_label"], column=0, columnspan=5, pady=5
         )

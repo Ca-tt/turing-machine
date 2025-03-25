@@ -39,6 +39,7 @@ class FileSaver:
 
         #? parts
         self.Rules = Rules()
+        self.Tape = Tape()
 
 
     def create_widgets(self):
@@ -75,8 +76,10 @@ class FileSaver:
 
 
     def save_to_json(self):
+        rules = self.Rules.read_rules()
+        # print("🐍 save_to_json ~ rules",rules)
         # Convert tuple keys to strings
-        self.saved["rules"] = {str(k): v for k, v in self.Rules.rules.items()}
+        self.saved["rules"] = {str(k): v for k, v in rules.items()}
         
         data = {"input": self.saved["symbols"], "rules": self.saved["rules"]}
 
@@ -96,6 +99,7 @@ class FileSaver:
 
             # Convert rule keys back to tuples
             rules_deserialized = {tuple(k.split(",")): v for k, v in data["rules"].items()}
+            print("data successfully loaded")
 
             return data["input"], rules_deserialized
         except Exception as e:
@@ -117,30 +121,35 @@ class FileSaver:
 
     def load_from_file(self):
         input_string, loaded_rules = self.load_from_json()
-        print("🐍 loaded symbols from json", input_string)
-        print("🐍  loaded rules from json ", loaded_rules)
+        # print("🐍 loaded symbols from json", input_string)
+        # print("🐍  loaded rules from json ", loaded_rules)
 
         if input_string is not None:
             # Set input field text
             widgets["tape"]["symbols_input"].delete(0, "end")
             widgets["tape"]["symbols_input"].insert(0, input_string)
 
+
+        # create new fields for rules, when loaded rules > fields 
         if loaded_rules is not None:
-            # Set rules
-            # self.Rules.rules = loaded_rules
+            loaded_rules_count = len(loaded_rules)
+            fields_count = len(widgets["rules"]["fields"])
+            
+            if loaded_rules_count > fields_count:
+                for index, rule in enumerate(loaded_rules.items()):
+                    # print("🐍 load_from_file ~ index",index)
 
-            # Clear existing rule entries, set new texts for them
+                    if index >= fields_count:
+                        widgets["rules"]["frame"].add_new_field()
+                        print("new field added! (on load json)")         
 
-            # for i, string in enumerate()
 
-            #! Тут есть проблемы со связкой Rules
-            #! Поля Rules не обновляются после загрузки из JSON
-            #! Почему-то пишет, что длина символов больше tape_lenght
+            #? insert loaded_rules into fields as text 
+            for index, (left_part, right_part) in enumerate(loaded_rules.items()):   
+                # print(index)         
+                # print(rule)         
 
-            for entry, (left_part, right_part) in zip(
-                self.Rules.rule_fields, loaded_rules.items()
-            ):
-                print("🐍 entry",entry)
+                # print("🐍 entry",widgets["rules"]["fields"][index])
                 # print("🐍  key",left_part)
                 # print("🐍  value",right_part)
                 regexp = r"['() ]"
@@ -156,7 +165,7 @@ class FileSaver:
                 rule_text = (
                     f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
                 )
-                entry.delete(0, "end")
-                entry.insert(0, rule_text)
+                widgets["rules"]["fields"][index].delete(0, "end")
+                widgets["rules"]["fields"][index].insert(0, rule_text)
 
-            Tape().set_cells_text()
+            self.Tape.set_cells_text()

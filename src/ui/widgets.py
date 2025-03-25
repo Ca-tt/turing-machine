@@ -19,7 +19,7 @@ class TapeWidgets(TypedDict):
 
 class RulesWidgets(TypedDict):
     frame: VerticalScrollableFrame
-    rules: list[CTkEntry]
+    fields: list[CTkEntry]
     add_rule_button: CTkButton
 
 
@@ -55,7 +55,7 @@ tape_widgets: TapeWidgets = {
 
 rules_widgets: RulesWidgets = {
     "frame": VerticalScrollableFrame,
-    "rules": [],
+    "fields": [],
     "add_rule_button": CTkButton,
 }
 

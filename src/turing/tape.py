@@ -17,19 +17,32 @@ from ui.config import UI, TAPE, TEXT, COLORS
 from ui.app import App, app
 from turing.rules import Rules
 
+#! сделать Tape локирование
 
 class Tape:
+    __tape_instance = None
+
+    cells: list[CTkEntry]
+    symbols: list[str]
+    is_running: bool
+
+    head_position: int
+    state: str = "q0"
+
+    def __new__(cls, *args, **kwargs):
+        if cls.__tape_instance is None:
+            cls.__tape_instance = super().__new__(cls)
+            cls.__tape_instance.symbols = [TAPE["sign"]] * TAPE["cells"]
+            cls.__tape_instance.cells = []
+            cls.__tape_instance.head_position = TAPE["position"]
+            cls.__tape_instance.state = "q0"
+            cls.__tape_instance.is_running = False
+
+        return cls.__tape_instance
+
+
     def __init__(self):
         self.app = app._app
-
-        self.tape_symbols: list[str] = [TAPE["sign"]] * TAPE["cells"]
-        self.head_position: int = TAPE["position"]
-        self.is_running = False
-
-        self.state: str = "q0"
-
-        # ? widgets
-        self.cells: list[CTkLabel] = []  # tape labels
 
         #? parts
         self.Rules = Rules()
@@ -107,11 +120,13 @@ class Tape:
         symbols = list(widgets["tape"]["symbols_input"].get())
         tape_length = len(self.cells)
         symbols_length = len(symbols) 
+        # print("🐍 set_cells_text ~ symbols",symbols)
+        # print("🐍 set_cells_text ~ tape_length",tape_length)
 
         for index, symbol in enumerate(symbols):
             # ensures if input is not too long
             if index < tape_length:
-                self.tape_symbols[self.head_position - symbols_length // 2 + index] = symbol
+                self.symbols[self.head_position - symbols_length // 2 + index] = symbol
             if index > tape_length:
                 print(TEXT["errors"]["tape"]["input"]["too_many_symbols"])
 
@@ -120,16 +135,16 @@ class Tape:
 
     def clear_cells(self):
         for i, cell in enumerate(self.cells):
-            self.tape_symbols[i] = "_"
+            self.symbols[i] = "_"
             cell.configure(text="_")
 
 
     # ? update cells color and symbol
     def update_cells(self):
-        # print("🐍 self.tape_symbols",self.tape_symbols)
+        # print("🐍 self.symbols",self.symbols)
         # print("🐍 self.cells",self.cells)
 
-        for i, symbol in enumerate(self.tape_symbols):
+        for i, symbol in enumerate(self.symbols):
             if i == self.head_position:
                 self.cells[i].configure(fg_color=COLORS["tape"]["highlight"])
             else:
@@ -153,7 +168,7 @@ class Tape:
     def run_until_stop(self):
         if (
             self.is_running
-            and (self.state, self.tape_symbols[self.head_position]) in self.Rules.rules
+            and (self.state, self.symbols[self.head_position]) in self.Rules.rules
         ):
             self.make_step()
             self.app.after(500, self.run_until_stop)
@@ -163,14 +178,14 @@ class Tape:
     def make_step(self):
         self.Rules.read_rules()
 
-        current_symbol = self.tape_symbols[self.head_position]
+        current_symbol = self.symbols[self.head_position]
 
         if (self.state, current_symbol) in self.Rules.rules:
             # ? get (next state, write symbol, direction) tuple
             next_state, write_symbol, move = self.Rules.rules[(self.state, current_symbol)]
 
             # ? set next symbol for the new cell
-            self.tape_symbols[self.head_position] = write_symbol
+            self.symbols[self.head_position] = write_symbol
 
             # ? update the state
             self.state = next_state
@@ -189,6 +204,6 @@ class Tape:
             self.update_cells()
 
     def move_right(self):
-        if self.head_position < len(self.tape_symbols) - 1:
+        if self.head_position < len(self.symbols) - 1:
             self.head_position += 1
             self.update_cells()

@@ -1,7 +1,7 @@
 # folders
 test/
 src/__pycache__
-ui/__pycache__
+src/ui/__pycache__
 __pycache__
 files/
 

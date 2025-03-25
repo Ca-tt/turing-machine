@@ -50,13 +50,13 @@ TAPE: TapeConfig = {
 
 TEXT: TextConfig = {
     "button": {
-        "set_tape": "Set Tape",
-        "step": "Step",
-        "step_left": "← Left",
-        "step_right": "Right →",
-        "run": "Run",
-        "stop": "Stop",
-        "new_rule": "Add a New Rule",
+        "set_tape": "Завантажити стрiчку",
+        "step": "Крок",
+        "step_left": "← Влiво",
+        "step_right": "Вправо →",
+        "run": "Запустити",
+        "stop": "Зупинит",
+        "new_rule": "Додати нове правило",
     },
     "errors": {
         "tape": {

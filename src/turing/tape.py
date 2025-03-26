@@ -126,7 +126,7 @@ class Tape:
 
     def add_cell(self, new_cell_position):
         new_cell_sign = "_"
-        print("🐍 self.symbols (before add_cell): ",self.symbols)
+        # print("🐍 self.symbols (before add_cell): ",self.symbols)
 
         label = CTkLabel(
             widgets["tape"]["frame"],
@@ -137,7 +137,7 @@ class Tape:
             corner_radius=5,
         )
 
-        print("🐍 new_cell_position",new_cell_position)
+        # print("🐍 new_cell_position",new_cell_position)
         if new_cell_position < 0:
             new_cell_position = 0
             #? shift head left
@@ -149,7 +149,7 @@ class Tape:
             self.head_position -= 1
             # print("shift right")
 
-        print(f"inserting cell to position {new_cell_position}")
+        # print(f"inserting cell to position {new_cell_position}")
         # print(f"head position after inserting: {self.head_position}")
 
         self.symbols.insert(new_cell_position, new_cell_sign)
@@ -186,9 +186,6 @@ class Tape:
 
         #? set 0 to shift odd symbols leftside
         #? set 1 to shift rightside
-
-        #! Есть подозрение, что баг касается вставки чётных / нечётных
-        #! когда одна ячейка гуляет и до неё тупо не достаёт 
         odd_shift = 1 
         shift_from_center = symbols_len // 2 
 
@@ -196,7 +193,7 @@ class Tape:
         if symbols_len % 2 == 0:
             shift_from_center -= odd_shift 
 
-        print("🐍 self.head_position",self.head_position)
+        # print("🐍 self.head_position",self.head_position)
 
         for index, symbol in enumerate(symbols):
             new_position = -(index - shift_from_center) # -3, -2, -1, 0, 1, 2, 3

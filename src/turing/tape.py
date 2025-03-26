@@ -144,7 +144,7 @@ class Tape:
             self.head_position += 1
             # print("shift left")
         else:
-            new_cell_position = len(self.cells) + 1
+            new_cell_position = len(self.cells)
             #? shift head right
             self.head_position -= 1
             # print("shift right")

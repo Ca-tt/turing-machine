@@ -2,7 +2,7 @@ from custom_types.configT import *
 
 # settings
 UI: UIConfig = {
-    "theme": "dark",  # dark, light
+    "theme": "light",  # dark, light
     "colors": "green",  # green, blue, dark-blue
     "size": "750x480",
     "title": "Turing Machine (by Roman Gluschenko)",
@@ -35,10 +35,10 @@ UI: UIConfig = {
 
 TAPE: TapeConfig = {
     "sign": "_",
-    "position": 10,
+    "position": 1,
     "state": "q0",
-    "input": "ababbbaabaaab",
-    "cells": 21,
+    "input": "123",
+    "cells": 5,
     "rules": [
         "q0,a -> q1,b,R",
         "q0,b -> q1,a,R",

@@ -35,10 +35,8 @@ class TuringMachineApp:
         self.Rules.create_widgets()
 
         #? set data
-        self.Tape.update_cells()
-        
         self.Rules.read_rules()
-        self.Tape.set_cells_text()
+        self.Tape.set_symbols()
 
 
 

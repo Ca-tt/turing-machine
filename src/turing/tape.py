@@ -73,7 +73,7 @@ class Tape:
 
         # ? [set tape] signs button
         widgets["tape"]["buttons"]["set_tape_text"] = CTkButton(
-            self.app, text=TEXT["button"]["set_tape"], command=self.set_cells_text
+            self.app, text=TEXT["button"]["set_tape"], command=self.set_symbols
         ).grid(row=UI["rows"]["input"], column=3, padx=5, pady=5)
 
         # ? step [left] / [right] buttons
@@ -98,9 +98,14 @@ class Tape:
             self.app, text=TEXT["button"]["stop"], command=self.stop
         ).grid(row=UI["rows"]["buttons"], column=4, pady=5)
 
+
     def create_cells(self):
+        self.cells = []
+        print("🐍 self.symbols",self.symbols)
+        cells_len = len(self.symbols)
+        print("🐍 cells_len (create_cells)",cells_len)
         # ? create tape cells
-        for i in range(TAPE["cells"]):
+        for i in range(cells_len):
             label = CTkLabel(
                 widgets["tape"]["frame"],
                 text=TAPE["sign"],
@@ -112,49 +117,138 @@ class Tape:
             label.grid(row=UI["rows"]["tape"], column=i, padx=2)
             self.cells.append(label)
 
+        print("🐍  self.cells len (after create_cells): ",len(self.cells))
 
-    def set_cells_text(self):
+    
+    def extend_tape(self):
+        #? here will goes all check / ifs
+        pass
+
+
+    def add_cell(self, new_cell_position):
+        test_sign = "+"
+        print("🐍 self.symbols (before add_cell): ",self.symbols)
+
+        label = CTkLabel(
+            widgets["tape"]["frame"],
+            text=test_sign,
+            width=20,
+            font=("Courier", 14),
+            fg_color=("white", COLORS["tape"]["cell"]),
+            corner_radius=5,
+        )
+
+        #! Надо продумать новый head_position
+        #! Возможно, нужно позже сдвигать head_position
+        print("🐍 new_cell_position",new_cell_position)
+        if new_cell_position < 0:
+            new_cell_position = 0
+            #? shift left
+            self.head_position += 1
+            print("shift left")
+        else:
+            new_cell_position = len(self.cells) + 1
+            #? shift right
+            self.head_position -= 1
+            print("shift right")
+
+        print(f"inserting cell to position {new_cell_position}")
+        # print(f"head position after inserting: {self.head_position}")
+
+        self.symbols.insert(new_cell_position, test_sign)
+        self.cells.insert(new_cell_position, label)
+        print("🐍 self.symbols (after add_cell): ",self.symbols)
+        print("🐍 self.cells len (after add_cell): ", len(self.cells))
+
+        print(f"{'='*10}")
+
+        label.grid(row=UI["rows"]["tape"], column=new_cell_position, padx=2)
+
+        # self.app.update()
+        self.create_cells()
+        
+        self.set_symbols()
+        # self.update_cells()
+
+
+    def set_symbols(self):
         #? clear previous input
         self.clear_cells()
+        print("set_symbols working")
 
         symbols = list(widgets["tape"]["symbols_input"].get())
-        tape_length = len(self.cells)
-        symbols_length = len(symbols) 
-        # print("🐍 set_cells_text ~ symbols",symbols)
-        # print("🐍 set_cells_text ~ tape_length",tape_length)
+
+        tape_len = len(self.cells)
+        symbols_len = len(symbols) 
+        print("🐍 tape_len",tape_len)
+
+        # print("🐍 current head_position: ",self.current_position)
+    
+        #? shift_from_center calculations examples 
+        # (3 // 2 = 1 index, 5 // 2 = 2 index of 4 elements)
+        # 3, 5, 11 - place leftside or rightside (your choose 0 or 1)
+        # (3 // 2 = 1 index, 5 // 2 = 2 index of 4 elements)
+
+        #? set 0 to shift odd symbols leftside
+        #? set 1 to shift rightside
+        odd_shift = 1 
+        shift_from_center = symbols_len // 2 
+
+        #? find the center index of odd or even symbols count 
+        if symbols_len % 2 == 0:
+            shift_from_center -= odd_shift 
+
+        print("🐍 self.head_position",self.head_position)
 
         for index, symbol in enumerate(symbols):
-            # ensures if input is not too long
-            if index < tape_length:
-                self.symbols[self.head_position - symbols_length // 2 + index] = symbol
-            if index > tape_length:
-                print(TEXT["errors"]["tape"]["input"]["too_many_symbols"])
+            new_position = -(index - shift_from_center) # -3, -2, -1, 0, 1, 2, 3
+            cell_position = self.head_position - new_position
+            print("🐍 new cell_position",cell_position)
 
-        self.update_cells()
+            #? check for the need of tape extension
+            #? extend the boundaries when needed
+            if cell_position < 0 or cell_position > tape_len - 1:
+                self.add_cell(cell_position)
+                return
 
 
-    def clear_cells(self):
-        for i, cell in enumerate(self.cells):
-            self.symbols[i] = "_"
-            cell.configure(text="_")
+            self.symbols[cell_position] = symbol
+        print("🐍 self.symbols (after set_cells_text)",self.symbols)
+        print(f"{'='*10}")
+
+        self.update_cell_texts()
 
 
     # ? update cells color and symbol
-    def update_cells(self):
-        # print("🐍 self.symbols",self.symbols)
-        # print("🐍 self.cells",self.cells)
+    def update_cell_texts(self):
+        print("update_cell_texts working...")
+        print("🐍 self.symbols: ",self.symbols)
+        print("🐍 self.cells len: ", len(self.cells))
+        print("🐍 self.head_position",self.head_position)
+        print(f"{'='*10}")
 
         for i, symbol in enumerate(self.symbols):
             if i == self.head_position:
                 self.cells[i].configure(fg_color=COLORS["tape"]["highlight"])
             else:
                 self.cells[i].configure(fg_color=("white", COLORS["tape"]["cell"]))
-
             self.cells[i].configure(text=symbol)
+
         widgets["tape"]["state"].configure(text=f"State: {self.state}")
 
-    def clear_tape(self):
+    def clear_cells(self):
+        for i, cell in enumerate(self.cells):
+            self.symbols[i] = "_"
+            cell.configure(text="_")
+        
+        # self.cells = []
+
+    def extend_side(self, side="right"):
+        #! Когда нужно, добавляем ячеек в левую или правую сторону
+        #! Вычисляем это, когда (число знаков из input // 2) > max_tape_cells (21) - tape_position (19)
+        #! или когда (число знаков из input // 2) > tape_position (3) - min_tape_cells (0)
         pass
+
 
     def run(self):
         self.is_running = True
@@ -196,14 +290,14 @@ class Tape:
             elif move == "R":
                 self.move_right()
 
-            self.update_cells()
+            self.update_cell_texts()
 
     def move_left(self):
         if self.head_position > 0:
             self.head_position -= 1
-            self.update_cells()
+            self.update_cell_texts()
 
     def move_right(self):
         if self.head_position < len(self.symbols) - 1:
             self.head_position += 1
-            self.update_cells()
+            self.update_cell_texts()

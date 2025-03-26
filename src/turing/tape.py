@@ -17,7 +17,6 @@ from ui.config import UI, TAPE, TEXT, COLORS
 from ui.app import App, app
 from turing.rules import Rules
 
-#! сделать Tape локирование
 
 class Tape:
     __tape_instance = None
@@ -101,9 +100,11 @@ class Tape:
 
     def create_cells(self):
         self.cells = []
-        print("🐍 self.symbols",self.symbols)
         cells_len = len(self.symbols)
-        print("🐍 cells_len (create_cells)",cells_len)
+
+        # print("🐍 self.symbols",self.symbols)
+        # print("🐍 cells_len (create_cells)",cells_len)
+        
         # ? create tape cells
         for i in range(cells_len):
             label = CTkLabel(
@@ -117,70 +118,64 @@ class Tape:
             label.grid(row=UI["rows"]["tape"], column=i, padx=2)
             self.cells.append(label)
 
-        print("🐍  self.cells len (after create_cells): ",len(self.cells))
+        # print("🐍  self.cells len (after create_cells): ",len(self.cells))
 
     
-    def extend_tape(self):
-        #? here will goes all check / ifs
-        pass
+
 
 
     def add_cell(self, new_cell_position):
-        test_sign = "+"
+        new_cell_sign = "_"
         print("🐍 self.symbols (before add_cell): ",self.symbols)
 
         label = CTkLabel(
             widgets["tape"]["frame"],
-            text=test_sign,
+            text=new_cell_sign,
             width=20,
             font=("Courier", 14),
             fg_color=("white", COLORS["tape"]["cell"]),
             corner_radius=5,
         )
 
-        #! Надо продумать новый head_position
-        #! Возможно, нужно позже сдвигать head_position
         print("🐍 new_cell_position",new_cell_position)
         if new_cell_position < 0:
             new_cell_position = 0
-            #? shift left
+            #? shift head left
             self.head_position += 1
-            print("shift left")
+            # print("shift left")
         else:
             new_cell_position = len(self.cells) + 1
-            #? shift right
+            #? shift head right
             self.head_position -= 1
-            print("shift right")
+            # print("shift right")
 
         print(f"inserting cell to position {new_cell_position}")
         # print(f"head position after inserting: {self.head_position}")
 
-        self.symbols.insert(new_cell_position, test_sign)
+        self.symbols.insert(new_cell_position, new_cell_sign)
         self.cells.insert(new_cell_position, label)
-        print("🐍 self.symbols (after add_cell): ",self.symbols)
-        print("🐍 self.cells len (after add_cell): ", len(self.cells))
 
-        print(f"{'='*10}")
+        # print("🐍 self.symbols (after add_cell): ",self.symbols)
+        # print("🐍 self.cells len (after add_cell): ", len(self.cells))
+
+        # print(f"{'='*10}")
 
         label.grid(row=UI["rows"]["tape"], column=new_cell_position, padx=2)
 
-        # self.app.update()
         self.create_cells()
-        
         self.set_symbols()
-        # self.update_cells()
 
 
     def set_symbols(self):
         #? clear previous input
         self.clear_cells()
-        print("set_symbols working")
+        # print("set_symbols working")
 
         symbols = list(widgets["tape"]["symbols_input"].get())
 
         tape_len = len(self.cells)
         symbols_len = len(symbols) 
-        print("🐍 tape_len",tape_len)
+        # print("🐍 tape_len",tape_len)
 
         # print("🐍 current head_position: ",self.current_position)
     
@@ -191,6 +186,9 @@ class Tape:
 
         #? set 0 to shift odd symbols leftside
         #? set 1 to shift rightside
+
+        #! Есть подозрение, что баг касается вставки чётных / нечётных
+        #! когда одна ячейка гуляет и до неё тупо не достаёт 
         odd_shift = 1 
         shift_from_center = symbols_len // 2 
 
@@ -203,7 +201,7 @@ class Tape:
         for index, symbol in enumerate(symbols):
             new_position = -(index - shift_from_center) # -3, -2, -1, 0, 1, 2, 3
             cell_position = self.head_position - new_position
-            print("🐍 new cell_position",cell_position)
+            # print("🐍 new cell_position",cell_position)
 
             #? check for the need of tape extension
             #? extend the boundaries when needed
@@ -213,19 +211,19 @@ class Tape:
 
 
             self.symbols[cell_position] = symbol
-        print("🐍 self.symbols (after set_cells_text)",self.symbols)
-        print(f"{'='*10}")
+        # print("🐍 self.symbols (after set_cells_text)",self.symbols)
+        # print(f"{'='*10}")
 
         self.update_cell_texts()
 
 
     # ? update cells color and symbol
     def update_cell_texts(self):
-        print("update_cell_texts working...")
-        print("🐍 self.symbols: ",self.symbols)
-        print("🐍 self.cells len: ", len(self.cells))
-        print("🐍 self.head_position",self.head_position)
-        print(f"{'='*10}")
+        # print("update_cell_texts working...")
+        # print("🐍 self.symbols: ",self.symbols)
+        # print("🐍 self.cells len: ", len(self.cells))
+        # print("🐍 self.head_position",self.head_position)
+        # print(f"{'='*10}")
 
         for i, symbol in enumerate(self.symbols):
             if i == self.head_position:
@@ -236,12 +234,18 @@ class Tape:
 
         widgets["tape"]["state"].configure(text=f"State: {self.state}")
 
+
     def clear_cells(self):
         for i, cell in enumerate(self.cells):
             self.symbols[i] = "_"
             cell.configure(text="_")
         
         # self.cells = []
+
+
+    def extend_tape(self):
+        #? here will goes all check / ifs
+        pass
 
     def extend_side(self, side="right"):
         #! Когда нужно, добавляем ячеек в левую или правую сторону

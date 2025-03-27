@@ -1,14 +1,9 @@
+from tkinter import filedialog
 from re import sub
 import json
 from os.path import abspath, join, dirname
 
-from customtkinter import (
-    CTk,
-    CTkButton,
-    CTkEntry,
-    CTkFrame,
-    CTkLabel,
-)
+from customtkinter import CTkButton
 
 #? types
 from custom_types.fileSaverT import *
@@ -17,7 +12,7 @@ from custom_types.fileSaverT import *
 from ui.widgets import widgets
 
 # ? configs
-from ui.config import UI, TAPE, TEXT, COLORS
+from ui.config import UI, COLORS
 
 #? parts
 from turing.rules import Rules
@@ -29,7 +24,8 @@ class FileSaver:
         base_dir = dirname(abspath(__file__))
         files_dir = join(base_dir, "..", "files")
 
-        self.file_path = join(files_dir, json_file_name)
+        self.default_file_path = join(files_dir, json_file_name)
+        self.file_path = self.default_file_path
 
         #? data to save
         self.saved: SavedDataT = {
@@ -41,13 +37,11 @@ class FileSaver:
         self.Rules = Rules()
         self.Tape = Tape()
 
-
     def create_widgets(self):
         # ? [navbar] buttons
-        # ? save
         widgets["navbar"]["buttons"]["save_to_file"] = CTkButton(
             widgets["navbar"]["frame"],
-            text="Save",
+            text="Save As...",
             fg_color=COLORS["navbar"]["buttons"],
             height=UI["navbar"]["buttons"]["height"],
             width=UI["navbar"]["buttons"]["width"],
@@ -59,10 +53,9 @@ class FileSaver:
             pady=0,
         )
 
-        # ? load
         widgets["navbar"]["buttons"]["load_from_file"] = CTkButton(
             widgets["navbar"]["frame"],
-            text="Load",
+            text="Load File...",
             fg_color=COLORS["navbar"]["buttons"],
             height=UI["navbar"]["buttons"]["height"],
             width=UI["navbar"]["buttons"]["width"],
@@ -74,11 +67,9 @@ class FileSaver:
             pady=0,
         )
 
-
     def save_to_json(self):
         rules = self.Rules.read_rules()
-        # print("🐍 save_to_json ~ rules",rules)
-        # Convert tuple keys to strings
+        #? Convert tuple keys to strings
         self.saved["rules"] = {str(k): v for k, v in rules.items()}
         
         data = {"input": self.saved["symbols"], "rules": self.saved["rules"]}
@@ -86,11 +77,10 @@ class FileSaver:
         try:
             with open(self.file_path, "w", encoding="utf-8") as file:
                 json.dump(data, file, indent=4)
-                print("data successfully saved!")
+                print(f"Data successfully saved to {self.file_path}!")
                 self.clear_saved_data()
         except Exception as e:
             print(f"Error saving file: {e}")
-
 
     def load_from_json(self):
         try:
@@ -99,73 +89,74 @@ class FileSaver:
 
             # Convert rule keys back to tuples
             rules_deserialized = {tuple(k.split(",")): v for k, v in data["rules"].items()}
-            print("data successfully loaded")
+            print(f"Data successfully loaded from {self.file_path}")
 
             return data["input"], rules_deserialized
         except Exception as e:
-            print(f"Error loading data file (maybe it rules): {e}")
+            print(f"Error loading file: {e}")
             return None, None
-        
 
     def clear_saved_data(self):
-        self.saved["rules"] = ""
-        self.saved["symbols"] = {}
-        
+        self.saved["symbols"] = ""
+        self.saved["rules"] = {}
 
     def save_to_file(self):
         self.saved["symbols"] = widgets["tape"]["symbols_input"].get()
-        # ? read rules to update self.rules
-        self.Rules.read_rules()
-        self.save_to_json()
+        self.Rules.read_rules()  # Update rules before saving
 
+        # Ask the user for a file location
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
+            title="Save Turing Machine Data"
+        )
+
+        if file_path:
+            self.file_path = file_path
+            self.save_to_json()
+        else:
+            print("Save operation canceled.")
 
     def load_from_file(self):
-        input_string, loaded_rules = self.load_from_json()
-        # print("🐍 loaded symbols from json", input_string)
-        # print("🐍  loaded rules from json ", loaded_rules)
+        # Ask the user to select a file to load
+        file_path = filedialog.askopenfilename(
+            filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
+            title="Load Turing Machine Data"
+        )
 
-        if input_string is not None:
-            # Set input field text
-            widgets["tape"]["symbols_input"].delete(0, "end")
-            widgets["tape"]["symbols_input"].insert(0, input_string)
+        if file_path:
+            self.file_path = file_path
+            input_string, loaded_rules = self.load_from_json()
 
+            if input_string is not None:
+                widgets["tape"]["symbols_input"].delete(0, "end")
+                widgets["tape"]["symbols_input"].insert(0, input_string)
 
-        # create new fields for rules, when loaded rules > fields 
-        if loaded_rules is not None:
-            loaded_rules_count = len(loaded_rules)
-            fields_count = len(widgets["rules"]["fields"])
-            
-            if loaded_rules_count > fields_count:
-                for index, rule in enumerate(loaded_rules.items()):
-                    # print("🐍 load_from_file ~ index",index)
+            # Handle loading rules into fields
+            if loaded_rules is not None:
+                loaded_rules_count = len(loaded_rules)
+                fields_count = len(widgets["rules"]["fields"])
 
-                    if index >= fields_count:
+                if loaded_rules_count > fields_count:
+                    for index in range(loaded_rules_count - fields_count):
                         widgets["rules"]["frame"].add_new_field()
-                        print("new field added! (on load json)")         
+                        print("New field added! (on load json)")
 
+                # Insert loaded rules into fields
+                for index, (left_part, right_part) in enumerate(loaded_rules.items()):
+                    regexp = r"['() ]"
 
-            #? insert loaded_rules into fields as text 
-            for index, (left_part, right_part) in enumerate(loaded_rules.items()):   
-                # print(index)         
-                # print(rule)         
+                    old_state = sub(regexp, "", left_part[0])
+                    read_value = sub(regexp, "", left_part[1])
 
-                # print("🐍 entry",widgets["rules"]["fields"][index])
-                # print("🐍  key",left_part)
-                # print("🐍  value",right_part)
-                regexp = r"['() ]"
+                    new_state = right_part[0]
+                    write_value = right_part[1]
+                    direction = right_part[2]
 
-                old_state = sub(regexp, "", left_part[0])
-                read_value = sub(regexp, "", left_part[1])
+                    rule_text = f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
+                    widgets["rules"]["fields"][index].delete(0, "end")
+                    widgets["rules"]["fields"][index].insert(0, rule_text)
 
-                new_state = right_part[0]
-                write_value = right_part[1]
-
-                direction = right_part[2]
-
-                rule_text = (
-                    f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
-                )
-                widgets["rules"]["fields"][index].delete(0, "end")
-                widgets["rules"]["fields"][index].insert(0, rule_text)
-
-            self.Tape.set_symbols()
+                self.Tape.set_symbols()
+        else:
+            print("Load operation canceled.")

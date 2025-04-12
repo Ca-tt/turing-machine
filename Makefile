@@ -7,7 +7,8 @@ test:
 save:
 	git add . && git commit
 
-exe:
-	poetry run pyinstaller --clean --noconsole --onefile --name "Turing Machine" src/main.py
+show:
+	pip show customtkinter
 
-# --icon=img/mp4.ico
+exe:
+	poetry run pyinstaller --noconfirm --collect-data customtkinter --clean --noconsole  --onedir --name "Turing Machine" src/main.py

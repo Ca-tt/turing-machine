@@ -11,4 +11,4 @@ show:
 	pip show customtkinter
 
 exe:
-	poetry run pyinstaller --noconfirm --collect-data customtkinter --clean --noconsole  --onedir --name "Turing Machine" src/main.py
+	rm dist build -r && pyinstaller --noconfirm --collect-data customtkinter --clean --noconsole  --onedir --name "Turing Machine" src/main.py

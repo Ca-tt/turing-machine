@@ -41,7 +41,7 @@ class FileSaver:
         # ? [navbar] buttons
         widgets["navbar"]["buttons"]["save_to_file"] = CTkButton(
             widgets["navbar"]["frame"],
-            text="Save As...",
+            text="Зберегти як..",
             fg_color=COLORS["navbar"]["buttons"],
             height=UI["navbar"]["buttons"]["height"],
             width=UI["navbar"]["buttons"]["width"],
@@ -55,7 +55,7 @@ class FileSaver:
 
         widgets["navbar"]["buttons"]["load_from_file"] = CTkButton(
             widgets["navbar"]["frame"],
-            text="Load File...",
+            text="Вiдкрити..",
             fg_color=COLORS["navbar"]["buttons"],
             height=UI["navbar"]["buttons"]["height"],
             width=UI["navbar"]["buttons"]["width"],

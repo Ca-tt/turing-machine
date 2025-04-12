@@ -39,7 +39,7 @@ class App:
         # ? quit
         widgets["navbar"]["buttons"]["close_app"] =CTkButton(
             widgets["navbar"]["frame"],
-            text="Exit",
+            text="Закрити",
             fg_color=COLORS["navbar"]["buttons"],
             height=UI["navbar"]["buttons"]["height"],
             width=UI["navbar"]["buttons"]["width"],

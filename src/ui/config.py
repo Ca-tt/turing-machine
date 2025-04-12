@@ -5,7 +5,7 @@ UI: UIConfig = {
     "theme": "light",  # dark, light
     "colors": "green",  # green, blue, dark-blue
     "size": "750x480",
-    "title": "Turing Machine (by Roman Gluschenko)",
+    "title": "Машина Тюрiнга",
     "rows": {
         "navbar": 0,
         "input": 1,
@@ -55,7 +55,7 @@ TEXT: TextConfig = {
         "step_left": "← Влiво",
         "step_right": "Вправо →",
         "run": "Запустити",
-        "stop": "Зупинит",
+        "stop": "Зупинити",
         "new_rule": "Додати нове правило",
     },
     "errors": {

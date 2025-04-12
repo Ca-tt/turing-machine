@@ -8,3 +8,7 @@ files/
 # files
 todo.md
 test.py
+
+dist/
+build/
+*.spec

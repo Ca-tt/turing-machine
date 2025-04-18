@@ -1,66 +1,64 @@
-from typing import TypedDict
+from dataclasses import dataclass, field
+from typing import Optional
+
 from customtkinter import CTkButton, CTkEntry, CTkFrame, CTkLabel
+
+#? custom widgets
 from ui.scrollable_frame import VerticalScrollableFrame
 from ui.xy_frame import XYFrame
 
 
-class NavbarWidgets(TypedDict):
-    frame: XYFrame
-    buttons: dict[str, CTkButton]
+@dataclass
+class NavbarButtons:
+    save_to_file: Optional[CTkButton] = None
+    load_from_file: Optional[CTkButton] = None
+    close_app: Optional[CTkButton] = None
 
 
-class TapeWidgets(TypedDict):
-    frame: XYFrame
-    symbols_input: CTkEntry
-    buttons: dict[str, CTkButton]
-    cells: list[CTkLabel]
-    state: CTkEntry
+@dataclass
+class TapeButtons:
+    set_tape_text: Optional[CTkButton] = None
+    move_left: Optional[CTkButton] = None
+    move_right: Optional[CTkButton] = None
+    step: Optional[CTkButton] = None
+    run: Optional[CTkButton] = None
+    stop: Optional[CTkButton] = None
 
 
-class RulesWidgets(TypedDict):
-    frame: VerticalScrollableFrame
-    fields: list[CTkEntry]
-    add_rule_button: CTkButton
+@dataclass
+class NavbarWidgets:
+    frame: Optional[CTkFrame] = None
+    buttons: NavbarButtons = field(default_factory=NavbarButtons)
 
 
-class Widgets(TypedDict):
-    navbar: NavbarWidgets
-    tape: TapeWidgets
-    rules: RulesWidgets
+@dataclass
+class DescriptionWidgets:
+    label: Optional[CTkLabel] = None
+    field: Optional[CTkEntry] = None
 
 
-navbar_widgets: NavbarWidgets = {
-    "frame": CTkFrame,
-    "buttons": {
-        "save_to_file": CTkButton,
-        "load_from_file": CTkButton,
-        "close_app": CTkButton,
-    },
-}
+@dataclass
+class TapeWidgets:
+    frame: Optional[XYFrame] = None
+    symbols_input: Optional[CTkEntry] = None
+    buttons: TapeButtons = field(default_factory=TapeButtons)
+    cells: list[CTkLabel] = field(default_factory=list)
+    state_label: Optional[CTkLabel] = None
 
-tape_widgets: TapeWidgets = {
-    "frame": XYFrame,
-    "input": CTkEntry,
-    "buttons": {
-        "set_tape_text": CTkButton,
-        "move_left": CTkButton,
-        "move_right": CTkButton,
-        "step": CTkButton,
-        "run": CTkButton,
-        "stop": CTkButton,
-    },
-    "cells": [],  # List of CTkLabel instances
-    "state": CTkLabel,
-}
 
-rules_widgets: RulesWidgets = {
-    "frame": VerticalScrollableFrame,
-    "fields": [],
-    "add_rule_button": CTkButton,
-}
+@dataclass
+class RulesWidgets:
+    frame: Optional[VerticalScrollableFrame] = None
+    fields: list[CTkEntry] = field(default_factory=list)
+    add_rule_button: Optional[CTkButton] = None
 
-widgets: Widgets = {
-    "navbar": navbar_widgets,
-    "tape": tape_widgets,
-    "rules": rules_widgets,
-}
+
+@dataclass
+class Widgets:
+    navbar: NavbarWidgets = field(default_factory=NavbarWidgets)
+    description: DescriptionWidgets = field(default_factory=DescriptionWidgets)
+    tape: TapeWidgets = field(default_factory=TapeWidgets)
+    rules: RulesWidgets = field(default_factory=RulesWidgets)
+
+
+widgets = Widgets()

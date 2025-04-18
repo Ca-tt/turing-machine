@@ -33,7 +33,7 @@ if __name__ == "__main__":
     app.place_widgets()
 
     #? create interface with all functions    
-    turing_machine = TuringMachineApp()
+    # turing_machine = TuringMachineApp()
 
     #? runs the window
     app.open()

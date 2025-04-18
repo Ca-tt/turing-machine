@@ -229,7 +229,7 @@ class Tape:
                 self.cells[i].configure(fg_color=("white", COLORS["tape"]["cell"]))
             self.cells[i].configure(text=symbol)
 
-        widgets["tape"]["state"].configure(text=f"State: {self.state}")
+        widgets["tape"]["state_label"].configure(text=f"{TEXT['tape']['state_label']}: {self.state}")
 
 
     def clear_cells(self):

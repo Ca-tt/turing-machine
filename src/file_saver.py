@@ -12,7 +12,7 @@ from custom_types.fileSaverT import *
 from ui.widgets import widgets
 
 # ? configs
-from ui.config import UI, COLORS
+from ui.config import UI, COLORS, TEXTS
 
 #? parts
 from turing.rules import Rules
@@ -39,31 +39,31 @@ class FileSaver:
 
     def create_widgets(self):
         # ? [navbar] buttons
-        widgets["navbar"]["buttons"]["save_to_file"] = CTkButton(
-            widgets["navbar"]["frame"],
-            text="Зберегти як..",
-            fg_color=COLORS["navbar"]["buttons"],
-            height=UI["navbar"]["buttons"]["height"],
-            width=UI["navbar"]["buttons"]["width"],
+        widgets.navbar.buttons.save_to_file_button = CTkButton(
+            widgets.navbar.frame,
+            text=TEXTS.navbar.save_as_button,
+            fg_color=COLORS.navbar.buttons,
+            height=UI.navbar.buttons.height,
+            width=UI.navbar.buttons.width,
             command=self.save_to_file,
         ).grid(
-            row=UI["rows"]["navbar"],
+            row=UI.rows.navbar,
             column=0,
-            padx=UI["navbar"]["buttons"]["padx"],
+            padx=UI.navbar.buttons.padx,
             pady=0,
         )
 
-        widgets["navbar"]["buttons"]["load_from_file"] = CTkButton(
-            widgets["navbar"]["frame"],
-            text="Вiдкрити..",
-            fg_color=COLORS["navbar"]["buttons"],
-            height=UI["navbar"]["buttons"]["height"],
-            width=UI["navbar"]["buttons"]["width"],
+        widgets.navbar.buttons.open_file_button = CTkButton(
+            widgets.navbar.frame,
+            text=TEXTS.navbar.open_file_button,
+            fg_color=COLORS.navbar.buttons,
+            height=UI.navbar.buttons.height,
+            width=UI.navbar.buttons.width,
             command=self.load_from_file,
         ).grid(
-            row=UI["rows"]["navbar"],
+            row=UI.rows.navbar,
             column=1,
-            padx=UI["navbar"]["buttons"]["padx"],
+            padx=UI.navbar.buttons.padx,
             pady=0,
         )
 
@@ -101,14 +101,14 @@ class FileSaver:
         self.saved["rules"] = {}
 
     def save_to_file(self):
-        self.saved["symbols"] = widgets["tape"]["symbols_input"].get()
+        self.saved["symbols"] = widgets.tape.symbols_input.get()
         self.Rules.read_rules()  # Update rules before saving
 
         # Ask the user for a file location
         file_path = filedialog.asksaveasfilename(
             defaultextension=".json",
             filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
-            title="Save Turing Machine Data"
+            title=TEXTS.modals.save_to_file_modal_title
         )
 
         if file_path:
@@ -121,7 +121,7 @@ class FileSaver:
         # Ask the user to select a file to load
         file_path = filedialog.askopenfilename(
             filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
-            title="Load Turing Machine Data"
+            title=TEXTS.modals.open_file_modal_title
         )
 
         if file_path:
@@ -129,17 +129,17 @@ class FileSaver:
             input_string, loaded_rules = self.load_from_json()
 
             if input_string is not None:
-                widgets["tape"]["symbols_input"].delete(0, "end")
-                widgets["tape"]["symbols_input"].insert(0, input_string)
+                widgets.tape.symbols_input.delete(0, "end")
+                widgets.tape.symbols_input.insert(0, input_string)
 
             # Handle loading rules into fields
             if loaded_rules is not None:
                 loaded_rules_count = len(loaded_rules)
-                fields_count = len(widgets["rules"]["fields"])
+                fields_count = len(widgets.rules.fields)
 
                 if loaded_rules_count > fields_count:
                     for index in range(loaded_rules_count - fields_count):
-                        widgets["rules"]["frame"].add_new_field()
+                        widgets.rules.frame.add_new_field()
                         print("New field added! (on load json)")
 
                 # Insert loaded rules into fields
@@ -154,8 +154,8 @@ class FileSaver:
                     direction = right_part[2]
 
                     rule_text = f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
-                    widgets["rules"]["fields"][index].delete(0, "end")
-                    widgets["rules"]["fields"][index].insert(0, rule_text)
+                    widgets.rules.fields[index].delete(0, "end")
+                    widgets.rules.fields[index].insert(0, rule_text)
 
                 self.Tape.set_symbols()
         else:

@@ -20,7 +20,7 @@ class VerticalScrollableFrame(CTkScrollableFrame):
 
     #? rules inputs
     def place_fields(self):
-        for i, rule in enumerate(TAPE["rules"]):
+        for i, rule in enumerate(TAPE.rules):
             widget = CTkEntry(self, width=300)
             widget.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="w")
             widget.insert(0, rule)

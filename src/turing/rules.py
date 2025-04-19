@@ -4,7 +4,7 @@ from customtkinter import (
 )
 
 # ? configs
-from ui.config import UI, TAPE, TEXT, COLORS
+from ui.config import UI, TAPE, TEXTS, COLORS
 
 # ? UI
 from ui.widgets import widgets
@@ -37,21 +37,21 @@ class Rules:
 
     def create_widgets(self):
         #? vertical frame
-        widgets["rules"]["frame"] = VerticalScrollableFrame(self.app)
+        widgets.rules.frame = VerticalScrollableFrame(self.app)
         #? rules fields
-        widgets["rules"]["frame"].place_fields()
-        widgets["rules"]["frame"].grid(row=UI["rows"]["rules"], column=0, columnspan=5, pady=10)
+        widgets.rules.frame.place_fields()
+        widgets.rules.frame.grid(row=UI.rows.rules, column=0, columnspan=5, pady=10)
 
         # make rule_fields accessible globally
-        widgets["rules"]["fields"] = widgets["rules"]["frame"].get_fields()
-        self.fields = widgets["rules"]["frame"].get_fields()
+        widgets.rules.fields = widgets.rules.frame.get_fields()
+        self.fields = widgets.rules.frame.get_fields()
 
         # ? [new rule] button
-        widgets["rules"]["add_rule_button"] = CTkButton(
+        widgets.rules.add_rule_button = CTkButton(
             self.app,
-            text=TEXT["button"]["new_rule"],
-            command= widgets["rules"]["frame"].add_new_field,
-        ).grid(row=UI["rows"]["new_rule_button"], column=0, columnspan=5, pady=5)
+            text=TEXTS.button.new_rule_button,
+            command= widgets.rules.frame.add_new_field,
+        ).grid(row=UI.rows.new_rule_button, column=0, columnspan=5, pady=5)
 
 
     def get_rules(self):
@@ -92,6 +92,6 @@ class Rules:
                     self.rules[(state, read_symbol)] = (next_state, write_symbol, move)
                     # print("🐍 self.rules (tuples)", self.rules)
                 except:
-                    print(f"{TEXT['errors']['rules']['invalid_rule']} {rule_text}")
+                    print(f"{TEXTS.errors.rules.invalid_rule} {rule_text}")
         
         return self.rules

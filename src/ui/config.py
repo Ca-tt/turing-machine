@@ -9,9 +9,9 @@ UI = UIConfig(
     rows=Rows(
         navbar=0,
         description=1,
-        input=2,
+        input_row=2,
         tape=3,
-        buttons=4,
+        buttons_row=4,
         rules=5,
         new_rule_button=6,
         state_label=7,
@@ -39,28 +39,33 @@ TAPE = TapeConfig(
     ],
 )
 
-TEXT = TextConfig(
+
+    
+
+TEXTS = TextConfig(
+    navbar=NavbarTexts(),
     description=DescriptionText(label="Умови задачi:"),
     button=ButtonText(
-        set_tape="Завантажити стрiчку",
-        step="Крок",
-        step_left="← Влiво",
-        step_right="Вправо →",
-        run="Запустити",
-        stop="Зупинити",
-        new_rule="Додати нове правило",
+        set_tape_button="Завантажити стрiчку",
+        step_button="Крок",
+        step_left_button="← Влiво",
+        step_right_button="Вправо →",
+        run_button="Запустити",
+        stop_button="Зупинити",
+        new_rule_button="Додати нове правило",
     ),
-    errors=ErrorMessages(
-        tape=TapeErrors(
-            input=TapeError(
+    errors=ErrorText(
+        tape=TapeErrorsText(
+            input=TapeErrorText(
                 too_many_symbols="You've entered too many symbols, please shorten your input or add additional cells"
             )
         ),
-        rules=RulesErrors(
+        rules=RulesErrorsText(
             invalid_rule="You rule is uncorrect, please double check it: "
         ),
     ),
     tape=TapeTexts(state_label="Активний стан"),
+    modals=ModalTexts()
 )
 
 COLORS = ColorsConfig(

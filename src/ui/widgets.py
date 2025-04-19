@@ -10,19 +10,19 @@ from ui.xy_frame import XYFrame
 
 @dataclass
 class NavbarButtons:
-    save_to_file: Optional[CTkButton] = None
-    load_from_file: Optional[CTkButton] = None
+    save_to_file_button: Optional[CTkButton] = None
+    open_file_button: Optional[CTkButton] = None
     close_app: Optional[CTkButton] = None
 
 
 @dataclass
 class TapeButtons:
-    set_tape_text: Optional[CTkButton] = None
-    move_left: Optional[CTkButton] = None
-    move_right: Optional[CTkButton] = None
-    step: Optional[CTkButton] = None
-    run: Optional[CTkButton] = None
-    stop: Optional[CTkButton] = None
+    set_tape_button: Optional[CTkButton] = None
+    move_left_button: Optional[CTkButton] = None
+    move_right_button: Optional[CTkButton] = None
+    step_button: Optional[CTkButton] = None
+    run_button: Optional[CTkButton] = None
+    stop_button: Optional[CTkButton] = None
 
 
 @dataclass
@@ -40,10 +40,10 @@ class DescriptionWidgets:
 @dataclass
 class TapeWidgets:
     frame: Optional[XYFrame] = None
-    symbols_input: Optional[CTkEntry] = None
     buttons: TapeButtons = field(default_factory=TapeButtons)
     cells: list[CTkLabel] = field(default_factory=list)
     state_label: Optional[CTkLabel] = None
+    symbols_input: Optional[CTkEntry] = None
 
 
 @dataclass

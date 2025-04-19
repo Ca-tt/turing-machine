@@ -40,7 +40,7 @@ class XYFrame(customtkinter.CTkFrame):
                                               button_hover_color=scrollbar_button_hover_color, height=scrollbar_width)
         
         #? tweak to manually scroll the view horizontally
-        self.xy_canvas.xview_scroll(int(UI["tape"]["scrollbar"]["left_shift"]), "units")
+        self.xy_canvas.xview_scroll(int(UI.tape.scrollbar.left_shift), "units")
         
         self.xy_canvas.configure(yscrollcommand=lambda x,y: self.dynamic_scrollbar_vsb(x,y),
                                  xscrollcommand=lambda x,y: self.dynamic_scrollbar_hsb(x,y))

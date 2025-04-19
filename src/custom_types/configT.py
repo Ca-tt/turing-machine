@@ -1,59 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Literal, List
-
-
-# TEXT
-
-
-@dataclass
-class TapeTexts:
-    state_label: str
-
-
-@dataclass
-class DescriptionText:
-    label: str
-
-
-@dataclass
-class ButtonText:
-    set_tape: str
-    step: str
-    step_left: str
-    step_right: str
-    run: str
-    stop: str
-    new_rule: str
-
-
-@dataclass
-class TapeError:
-    too_many_symbols: str
-
-
-@dataclass
-class RulesErrors:
-    invalid_rule: str
-
-
-@dataclass
-class TapeErrors:
-    input: TapeError
-
-
-@dataclass
-class ErrorMessages:
-    tape: TapeErrors
-    rules: RulesErrors
-
-
-@dataclass
-class TextConfig:
-    description: DescriptionText
-    button: ButtonText
-    errors: ErrorMessages
-    tape: TapeTexts
-
+from custom_types.texts import *
 
 # UI
 @dataclass
@@ -92,9 +39,9 @@ class TapeUI:
 class Rows:
     navbar: int
     description: int
-    input: int
+    input_row: int
     tape: int
-    buttons: int
+    buttons_row: int
     rules: int
     new_rule_button: int
     state_label: int

@@ -14,11 +14,11 @@ class TuringMachineApp:
         self.FileSaver = FileSaver()
         self.FileSaver.create_widgets()
 
-        #? widgets
+        # #? widgets
         self.Tape.create_widgets()
         self.Rules.create_widgets()
 
-        #? set data
+        # #? set data
         self.Rules.read_rules()
         self.Tape.set_symbols()
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     app.place_widgets()
 
     #? create interface with all functions    
-    # turing_machine = TuringMachineApp()
+    turing_machine = TuringMachineApp()
 
     #? runs the window
     app.open()

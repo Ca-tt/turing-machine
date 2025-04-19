@@ -8,7 +8,7 @@ from customtkinter import (
 )
 
 # ? configs
-from ui.config import UI, TAPE, TEXT, COLORS
+from ui.config import UI, TAPE, TEXTS, COLORS
 
 # ? UI
 from ui.widgets import widgets
@@ -53,7 +53,7 @@ class App:
         )
 
         widgets.description.label = CTkLabel(
-            self._app, text=f"{TEXT.tape.state_label}: {TAPE.state}"
+            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}"
         )
         widgets.description.label.grid(
             row=UI.rows.state_label, column=0, columnspan=5, pady=5
@@ -61,7 +61,7 @@ class App:
 
         # ? state label
         widgets.tape.state_label = CTkLabel(
-            self._app, text=f"{TEXT.tape.state_label}: {TAPE.state}"
+            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}"
         )
         widgets.tape.state_label.grid(
             row=UI.rows.state_label, column=0, columnspan=5, pady=5

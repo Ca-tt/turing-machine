@@ -1,4 +1,4 @@
-from custom_types.configT import *
+from config.types.configT import *
 from dataclasses import dataclass
 
 #?  app settings

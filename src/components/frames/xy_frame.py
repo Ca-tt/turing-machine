@@ -7,7 +7,7 @@ License: MIT
 import customtkinter
 from tkinter import Canvas
 
-from .config import UI
+from config.config import UI
 
 class XYFrame(customtkinter.CTkFrame):
     def __init__(self,

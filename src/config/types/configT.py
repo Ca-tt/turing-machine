@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Literal, List
-from custom_types.texts import *
+from config.types.texts import *
 
 # UI
 @dataclass

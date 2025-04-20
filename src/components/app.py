@@ -10,10 +10,10 @@ from customtkinter import (
 )
 
 # ? configs
-from ui.config import *
+from config.config import *
 
 # ? UI
-from ui.widgets import widgets
+from components.widgets import widgets
 
 
 class App:
@@ -88,10 +88,10 @@ class App:
 
         # ? state label
         widgets.tape.state_label = CTkLabel(
-            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}"
+            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}", anchor="center"
         )
         widgets.tape.state_label.grid(
-            row=UI.rows.state_label, column=0, columnspan=5, pady=5
+            row=UI.rows.state_label, column=0, columnspan=2, padx=40, pady=5, sticky="we"
         )
 
 

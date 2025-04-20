@@ -1,8 +1,8 @@
 #? parts
-from ui.app import App, app
-from turing.tape import Tape
-from turing.rules import Rules
-from file_saver import FileSaver
+from components.app import app
+from components.turing.tape import Tape
+from components.turing.rules import Rules
+from components.file_saver import FileSaver
 
 
 class TuringMachineApp:
@@ -21,10 +21,6 @@ class TuringMachineApp:
         # #? set data
         self.Rules.read_rules()
         self.Tape.set_symbols()
-
-
-
-
 
 
 

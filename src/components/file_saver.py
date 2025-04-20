@@ -6,17 +6,17 @@ from os.path import abspath, join, dirname
 from customtkinter import CTkButton
 
 #? types
-from custom_types.fileSaverT import *
+from config.types.fileSaverT import *
 
 # ? UI
-from ui.widgets import widgets
+from components.widgets import widgets
 
 # ? configs
-from ui.config import UI, COLORS, TEXTS
+from config.config import UI, COLORS, TEXTS
 
 #? parts
-from turing.rules import Rules
-from turing.tape import Tape
+from components.turing.rules import Rules
+from components.turing.tape import Tape
 
 
 class FileSaver:
@@ -28,10 +28,7 @@ class FileSaver:
         self.file_path = self.default_file_path
 
         #? data to save
-        self.saved: SavedDataT = {
-            "symbols": "",
-            "rules": {},
-        }
+        self.saved_data = SavedData()
 
         #? parts
         self.Rules = Rules()
@@ -70,9 +67,14 @@ class FileSaver:
     def save_to_json(self):
         rules = self.Rules.read_rules()
         #? Convert tuple keys to strings
-        self.saved["rules"] = {str(k): v for k, v in rules.items()}
+        self.saved_data.rules = {str(k): v for k, v in rules.items()}
         
-        data = {"input": self.saved["symbols"], "rules": self.saved["rules"]}
+        data = {
+            "alphabet": self.saved_data.alphabet, 
+            "rules": self.saved_data.rules,
+            "conditions": self.saved_data.task_conditions,
+            "comments": self.saved_data.comments
+        }
 
         try:
             with open(self.file_path, "w", encoding="utf-8") as file:
@@ -91,17 +93,23 @@ class FileSaver:
             rules_deserialized = {tuple(k.split(",")): v for k, v in data["rules"].items()}
             print(f"Data successfully loaded from {self.file_path}")
 
-            return data["input"], rules_deserialized
+            return data["alphabet"], rules_deserialized, data["conditions"], data["comments"]
+        
         except Exception as e:
             print(f"Error loading file: {e}")
             return None, None
 
     def clear_saved_data(self):
-        self.saved["symbols"] = ""
-        self.saved["rules"] = {}
+        self.saved_data.alphabet = ""
+        self.saved_data.rules = {}
 
     def save_to_file(self):
-        self.saved["symbols"] = widgets.tape.alphabet_input.get()
+        #? conditions, comments
+        self.saved_data.task_conditions = widgets.task_description.input.get("0.0", "end") 
+        self.saved_data.comments = widgets.comments.input.get("0.0", "end") 
+
+        #? rules and alphabet
+        self.saved_data.alphabet = widgets.tape.alphabet_input.get()
         self.Rules.read_rules()  # Update rules before saving
 
         # Ask the user for a file location
@@ -126,7 +134,15 @@ class FileSaver:
 
         if file_path:
             self.file_path = file_path
-            input_string, loaded_rules = self.load_from_json()
+            input_string, loaded_rules, task_conditions, comments = self.load_from_json()
+
+            if task_conditions is not None:
+                widgets.task_description.input.delete("0.0", "end")
+                widgets.task_description.input.insert("0.0", task_conditions)
+            
+            if comments is not None:
+                widgets.comments.input.delete("0.0", "end")
+                widgets.comments.input.insert("0.0", comments)
 
             if input_string is not None:
                 widgets.tape.alphabet_input.delete(0, "end")

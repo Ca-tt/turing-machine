@@ -5,14 +5,14 @@ from customtkinter import (
 )
 
 # ? configs
-from ui.config import UI, TAPE, TEXTS, COLORS
+from config.config import UI, TAPE, TEXTS, COLORS
 
 # ? UI
-from ui.widgets import widgets
-from ui.scrollable_frame import VerticalScrollableFrame
+from components.widgets import widgets
+from components.frames.scrollable_frame import VerticalScrollableFrame
 
 #? parts
-from ui.app import App, app
+from components.app import App, app
 
 
 class Rules:
@@ -59,7 +59,7 @@ class Rules:
             self.app,
             text=TEXTS.button.new_rule_button,
             command= widgets.rules.frame.add_new_field,
-        ).grid(row=UI.rows.new_rule_button, column=0, columnspan=5, pady=5)
+        ).grid(row=UI.rows.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
 
 
     def get_rules(self):

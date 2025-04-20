@@ -1,7 +1,7 @@
 from customtkinter import CTkScrollableFrame, CTkEntry, CTkBaseClass
 
 # ? config
-from ui.config import TAPE
+from config.config import TAPE
 
 
 class VerticalScrollableFrame(CTkScrollableFrame):

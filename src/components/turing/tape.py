@@ -6,15 +6,15 @@ from customtkinter import (
 )
 
 # ? UI
-from ui.widgets import widgets
-from ui.xy_frame import XYFrame
+from components.widgets import widgets
+from components.frames.xy_frame import XYFrame
 
 # ? configs
-from ui.config import UI, TAPE, TEXTS, COLORS
+from config.config import UI, TAPE, TEXTS, COLORS
 
 #? parts
-from ui.app import App, app
-from turing.rules import Rules
+from components.app import App, app
+from components.turing.rules import Rules
 
 
 class Tape:

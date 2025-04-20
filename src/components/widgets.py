@@ -4,8 +4,8 @@ from typing import Optional
 from customtkinter import CTkButton, CTkEntry, CTkFrame, CTkLabel, CTkTextbox
 
 #? custom widgets
-from ui.scrollable_frame import VerticalScrollableFrame
-from ui.xy_frame import XYFrame
+from components.frames.scrollable_frame import VerticalScrollableFrame
+from components.frames.xy_frame import XYFrame
 
 
 @dataclass

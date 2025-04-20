@@ -16,13 +16,13 @@ class VerticalScrollableFrame(CTkScrollableFrame):
 
     def place_elements(self, elements):
         for i, element in enumerate(elements):
-            element.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="w")
+            element.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="we")
 
     #? rules inputs
     def place_fields(self):
         for i, rule in enumerate(TAPE.rules):
             widget = CTkEntry(self, width=300)
-            widget.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="w")
+            widget.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="we")
             widget.insert(0, rule)
             self.widgets.append(widget)
             self.fields.append(widget)
@@ -30,7 +30,7 @@ class VerticalScrollableFrame(CTkScrollableFrame):
 
     def add_new_field(self):
         widget = CTkEntry(self, width=300)
-        widget.grid(row=len(self.widgets), column=0, padx=10, pady=(10, 0), sticky="w")
+        widget.grid(row=len(self.widgets), column=0, padx=10, pady=(10, 0), sticky="we")
         self.widgets.append(widget)
         self.fields.append(widget)
 
@@ -38,7 +38,6 @@ class VerticalScrollableFrame(CTkScrollableFrame):
     def get_widget_values(self):
         for widget in self.widgets:
             self.widget_values.append(widget.get())
-        # print("🐍 self.widget_values", self.widget_values)
         return self.widget_values
     
     def get_fields(self):

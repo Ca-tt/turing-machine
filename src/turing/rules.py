@@ -1,6 +1,7 @@
 from customtkinter import (
     CTkButton,
     CTkEntry,
+    CTkLabel
 )
 
 # ? configs
@@ -31,16 +32,23 @@ class Rules:
 
     def __init__(self):
         self.app = app._app
-        # self.rules: dict[str, tuple[str, str]] = {} # (read_state, value) = (write_state, value)
-        # self.fields: list[CTkEntry] = []
 
 
     def create_widgets(self):
         #? vertical frame
         widgets.rules.frame = VerticalScrollableFrame(self.app)
+
+        #? label
+        widgets.rules.label = CTkLabel(
+            self.app, text=f"{TEXTS.rules.label}"
+        )
+        widgets.rules.label.grid(
+            row=UI.rows.rules_comments_labels, column=1, padx=5, pady=(5)
+        )
+
         #? rules fields
         widgets.rules.frame.place_fields()
-        widgets.rules.frame.grid(row=UI.rows.rules, column=0, columnspan=5, pady=10)
+        widgets.rules.frame.grid(row=UI.rows.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
         # make rule_fields accessible globally
         widgets.rules.fields = widgets.rules.frame.get_fields()

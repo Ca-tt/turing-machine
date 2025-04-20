@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from customtkinter import CTkButton, CTkEntry, CTkFrame, CTkLabel
+from customtkinter import CTkButton, CTkEntry, CTkFrame, CTkLabel, CTkTextbox
 
 #? custom widgets
 from ui.scrollable_frame import VerticalScrollableFrame
@@ -34,31 +34,41 @@ class NavbarWidgets:
 @dataclass
 class DescriptionWidgets:
     label: Optional[CTkLabel] = None
-    field: Optional[CTkEntry] = None
+    input: Optional[CTkTextbox] = None
 
 
 @dataclass
 class TapeWidgets:
-    frame: Optional[XYFrame] = None
+    cells_frame: Optional[XYFrame] = None
+    buttons_frame: Optional[CTkFrame] = None
+
     buttons: TapeButtons = field(default_factory=TapeButtons)
     cells: list[CTkLabel] = field(default_factory=list)
+    
+    alphabet_label: Optional[CTkLabel] = None
+    alphabet_input: Optional[CTkEntry] = None
     state_label: Optional[CTkLabel] = None
-    symbols_input: Optional[CTkEntry] = None
 
 
 @dataclass
 class RulesWidgets:
     frame: Optional[VerticalScrollableFrame] = None
+    label: Optional[CTkLabel] = None
     fields: list[CTkEntry] = field(default_factory=list)
     add_rule_button: Optional[CTkButton] = None
+
+class CommentsWidgets:
+    input: Optional[CTkTextbox] = None
+    label: Optional[CTkLabel] = None
 
 
 @dataclass
 class Widgets:
     navbar: NavbarWidgets = field(default_factory=NavbarWidgets)
-    description: DescriptionWidgets = field(default_factory=DescriptionWidgets)
+    task_description: DescriptionWidgets = field(default_factory=DescriptionWidgets)
     tape: TapeWidgets = field(default_factory=TapeWidgets)
     rules: RulesWidgets = field(default_factory=RulesWidgets)
+    comments: CommentsWidgets = field(default_factory=CommentsWidgets)
 
 
 widgets = Widgets()

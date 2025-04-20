@@ -3,12 +3,14 @@ from customtkinter import (
     CTkButton,
     CTkFrame,
     CTkLabel,
+    CTkTextbox,
+    CTkEntry,
     set_appearance_mode,
     set_default_color_theme,
 )
 
 # ? configs
-from ui.config import UI, TAPE, TEXTS, COLORS
+from ui.config import *
 
 # ? UI
 from ui.widgets import widgets
@@ -40,7 +42,7 @@ class App:
         # ? quit
         widgets.navbar.buttons.close_app = CTkButton(
             widgets.navbar.frame,
-            text="Закрити",
+            text=TEXTS.navbar.close_app_button,
             fg_color=COLORS.navbar.buttons,
             height=UI.navbar.buttons.height,
             width=UI.navbar.buttons.width,
@@ -52,12 +54,37 @@ class App:
             pady=0,
         )
 
-        widgets.description.label = CTkLabel(
-            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}"
+        #? task description
+        widgets.task_description.label = CTkLabel(
+            self._app, text=f"{TEXTS.task_description.label}", anchor="w"
         )
-        widgets.description.label.grid(
-            row=UI.rows.state_label, column=0, columnspan=5, pady=5
+        widgets.task_description.label.grid(
+            row=UI.rows.task_description_label, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(5), sticky="w"
         )
+        widgets.task_description.input = CTkTextbox(
+            self._app,
+            height=TASK_DESCRIPTION.input_height
+        )
+        widgets.task_description.input.grid(
+            row=UI.rows.task_description_input, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(0), sticky="we", 
+        )
+
+        #? comment labels
+        widgets.comments.label = CTkLabel(
+            self._app, text=f"{TEXTS.comments.label}", anchor="e"
+        )
+        widgets.comments.label.grid(
+            row=UI.rows.rules_comments_labels, column=3, columnspan=3, padx=COMMENTS.padx, pady=(5)
+        )
+
+        widgets.comments.input = CTkTextbox(
+            self._app,
+            height=COMMENTS.input_height
+        )
+        widgets.comments.input.grid(
+            row=UI.rows.rules_inputs, column=3, columnspan=2, padx=COMMENTS.padx, pady=(0), sticky="nwes" 
+        )
+
 
         # ? state label
         widgets.tape.state_label = CTkLabel(

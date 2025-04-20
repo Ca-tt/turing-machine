@@ -1,18 +1,25 @@
 from dataclasses import dataclass, field
+from config.texts.ErrorTexts import *
+
+@dataclass
+class NavbarTexts:
+    save_as_button: str = "Зберегти як.."
+    open_file_button: str = "Вiдкрити.."
+    close_app_button: str = "Закрити"
+
+@dataclass
+class DescriptionText:
+    label: str = "Умова задачi:"
 
 
 @dataclass
 class TapeTexts:
-    state_label: str
+    alphabet_label: str = "Алфавiт:"
+    state_label: str = "Активний стан:"
 
 
 @dataclass
-class DescriptionText:
-    label: str
-
-
-@dataclass
-class ButtonText:
+class TapeButtonTexts:
     set_tape_button: str
     step_button: str
     step_left_button: str
@@ -21,31 +28,14 @@ class ButtonText:
     stop_button: str
     new_rule_button: str
 
+@dataclass
+class RulesTexts:
+    label: str = "Правила:"
 
 @dataclass
-class TapeErrorText:
-    too_many_symbols: str
+class CommentsTexts:
+    label: str = "Коментарi:"
 
-
-@dataclass
-class RulesErrorsText:
-    invalid_rule: str
-
-
-@dataclass
-class TapeErrorsText:
-    input: TapeErrorText
-
-
-@dataclass
-class ErrorText:
-    tape: TapeErrorsText
-    rules: RulesErrorsText
-
-@dataclass
-class NavbarTexts:
-    save_as_button: str = "Зберегти як.."
-    open_file_button: str = "Вiдкрити.."
 
 #? modals
 @dataclass
@@ -58,8 +48,10 @@ class ModalTexts:
 @dataclass
 class TextConfig:
     navbar: NavbarTexts
-    description: DescriptionText
-    button: ButtonText
+    task_description: DescriptionText
+    button: TapeButtonTexts
     errors: ErrorText
     tape: TapeTexts
     modals: ModalTexts
+    comments: CommentsTexts
+    rules: RulesTexts

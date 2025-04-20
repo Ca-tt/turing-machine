@@ -18,14 +18,16 @@ class Navbar:
 
 @dataclass
 class ColumnRange:
-    start: int
-    end: int
+    start: int = 0
+    end: int = 5
 
 
 @dataclass
 class Scrollbar:
     height: int
     left_shift: int
+
+
 
 
 @dataclass
@@ -35,27 +37,8 @@ class TapeUI:
     scrollbar: Scrollbar
 
 
-@dataclass
-class Rows:
-    navbar: int
-    description: int
-    input_row: int
-    tape: int
-    buttons_row: int
-    rules: int
-    new_rule_button: int
-    state_label: int
 
 
-@dataclass
-class UIConfig:
-    theme: Literal["dark", "light"]
-    colors: Literal["green", "blue", "dark-blue"]
-    app_size: str
-    title: str
-    rows: Rows
-    navbar: Navbar
-    tape: TapeUI
 
 
 # TAPE

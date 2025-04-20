@@ -101,7 +101,7 @@ class FileSaver:
         self.saved["rules"] = {}
 
     def save_to_file(self):
-        self.saved["symbols"] = widgets.tape.symbols_input.get()
+        self.saved["symbols"] = widgets.tape.alphabet_input.get()
         self.Rules.read_rules()  # Update rules before saving
 
         # Ask the user for a file location
@@ -129,8 +129,8 @@ class FileSaver:
             input_string, loaded_rules = self.load_from_json()
 
             if input_string is not None:
-                widgets.tape.symbols_input.delete(0, "end")
-                widgets.tape.symbols_input.insert(0, input_string)
+                widgets.tape.alphabet_input.delete(0, "end")
+                widgets.tape.alphabet_input.insert(0, input_string)
 
             # Handle loading rules into fields
             if loaded_rules is not None:

@@ -1,35 +1,69 @@
 from custom_types.configT import *
+from dataclasses import dataclass
 
-# settings
+#?  app settings
+
+@dataclass
+class Rows:
+    navbar: int = 0
+    task_description_label: int = 1
+    task_description_input: int = 2
+    alphabet: int = 3
+    tape: int = 4
+    tape_buttons: int = 5
+    rules_comments_labels = 6 
+    rules_inputs: int = 7
+    new_rule_button: int = 8
+    state_label: int = 9
+
+
+@dataclass
+class UIConfig:
+    theme: Literal["dark", "light"]
+    colors: Literal["green", "blue", "dark-blue"]
+    app_size: str
+    title: str
+    rows: Rows
+    navbar: Navbar
+    tape: TapeUI
+
+
+
+@dataclass
+class DescriptionConfig:
+    padx: int = 20
+    input_height: int = 60 
+
+@dataclass
+class CommentsConfig:
+    padx: int = 20
+    input_height: int = 60 
+
+
+
 UI = UIConfig(
     theme="light",
     colors="green",
-    app_size="750x550",
+    app_size="780x630",
     title="Машина Тюрiнга",
-    rows=Rows(
-        navbar=0,
-        description=1,
-        input_row=2,
-        tape=3,
-        buttons_row=4,
-        rules=5,
-        new_rule_button=6,
-        state_label=7,
-    ),
+    rows=Rows(),
     navbar=Navbar(buttons=ButtonSize(width=50, height=20, padx=5, pady=0)),
     tape=TapeUI(
         height=30,
-        column=ColumnRange(start=1, end=3),
-        scrollbar=Scrollbar(height=13, left_shift=450),
+        column=ColumnRange(),
+        scrollbar=Scrollbar(height=13, left_shift=4800),
     ),
 )
 
+TASK_DESCRIPTION = DescriptionConfig()
+COMMENTS = DescriptionConfig()
+
 TAPE = TapeConfig(
     sign="_",
-    position=1,
+    position=34,
     state="q1",
     input="123",
-    cells=5,
+    cells=75,
     rules=[
         "q0,a -> q1,b,R",
         "q0,b -> q1,a,R",
@@ -39,13 +73,10 @@ TAPE = TapeConfig(
     ],
 )
 
-
-    
-
 TEXTS = TextConfig(
     navbar=NavbarTexts(),
-    description=DescriptionText(label="Умови задачi:"),
-    button=ButtonText(
+    task_description=DescriptionText(label="Умови задачi:"),
+    button=TapeButtonTexts(
         set_tape_button="Завантажити стрiчку",
         step_button="Крок",
         step_left_button="← Влiво",
@@ -65,7 +96,9 @@ TEXTS = TextConfig(
         ),
     ),
     tape=TapeTexts(state_label="Активний стан"),
-    modals=ModalTexts()
+    modals=ModalTexts(),
+    comments = CommentsTexts(),
+    rules = RulesTexts(),
 )
 
 COLORS = ColorsConfig(

@@ -69,7 +69,7 @@ ARROWS_CONFIG = ArrowsConfig()
 
 TAPE_CONFIG = TapeConfig(
     cell_sign="_",
-    state="q0",
+    state="q1",
     alphabet="ab",
     tape_input="aaabbbbaa",
     cells=75,

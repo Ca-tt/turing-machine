@@ -25,7 +25,7 @@ class Tape:
     is_running: bool
 
     head_position: int
-    state: str = "q0"
+    state: str = "q1"
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -33,7 +33,7 @@ class Tape:
             cls._instance.symbols = [TAPE_CONFIG.cell_sign] * TAPE_CONFIG.cells
             cls._instance.cells = []
             cls._instance.head_position = TAPE_CONFIG.cells // 2
-            cls._instance.state = "q0"
+            cls._instance.state = "q1"
             cls._instance.is_running = False
 
         return cls._instance

@@ -24,13 +24,13 @@ class ColumnRange:
 
 @dataclass
 class Scrollbar:
-    height: int
-    left_shift: int
+    height: int = 13
+    start_position: int = 8000
 
 
 
 @dataclass
-class TapeUI:
+class TapeCellsConfig:
     height: int
     column: ColumnRange
     scrollbar: Scrollbar
@@ -45,7 +45,7 @@ class TapeConfig:
     tape_input: str
     cells: int
     state: str
-    rules: List[str] = field(default_factory=list)
+    rules: List[str] = field(default_factory=list[str])
 
 
 # COLORS

@@ -8,13 +8,14 @@ class Rows:
     task_description_label: int = 1
     task_description_input: int = 2
     alphabet: int = 3
-    cell_numbers: int = 4
-    cells: int = 5
-    tape_buttons: int = 6
-    rules_comments_labels = 7 
-    rules_inputs: int = 8
-    new_rule_button: int = 9
-    state_label: int = 10
+    arrows: int = 4
+    cell_numbers: int = 5
+    cells: int = 6
+    tape_buttons: int = 7
+    rules_comments_labels = 8 
+    rules_inputs: int = 9
+    new_rule_button: int = 10
+    state_label: int = 11
 
 
 @dataclass
@@ -25,7 +26,7 @@ class UIConfig:
     title: str
     rows: Rows
     navbar: Navbar
-    tape: TapeUI
+    tape_cells: TapeCellsConfig
 
 
 
@@ -39,36 +40,44 @@ class CommentsConfig:
     padx: int = 20
     input_height: int = 60 
 
+@dataclass
+class ArrowsConfig:
+    padx: int = 20
+    height: int = 40 
+    width: int = 40
+    bg_color: str = "blue" 
+    move_size: int = 1
+
 
 UI = UIConfig(
     theme="light",
     colors="green",
-    app_size="780x630",
+    app_size="800x700",
     title="Машина Тюрiнга",
     rows=Rows(),
     navbar=Navbar(buttons=ButtonSize(width=50, height=20, padx=5, pady=0)),
-    tape=TapeUI(
+    tape_cells=TapeCellsConfig(
         height=60,
         column=ColumnRange(),
-        scrollbar=Scrollbar(height=13, left_shift=8300),
+        scrollbar=Scrollbar(),
     ),
 )
 
 TASK_DESCRIPTION = DescriptionConfig()
 COMMENTS = DescriptionConfig()
+ARROWS_CONFIG = ArrowsConfig()
 
-TAPE = TapeConfig(
+TAPE_CONFIG = TapeConfig(
     cell_sign="_",
-    state="q1",
+    state="q0",
     alphabet="ab",
     tape_input="aaabbbbaa",
     cells=75,
     rules=[
-        "q0,a -> q1,b,R",
-        "q0,b -> q1,a,R",
-        "q1,a -> q0,b,R",
-        "q1,b -> q0,a,R",
-        "q0,_ -> q1,_,L",
+        "q1,a -> q2,b,R",
+        "q1,b -> q2,a,R",
+        "q2,a -> q1,b,R",
+        "q2,b -> q1,a,R",
     ],
 )
 
@@ -76,13 +85,13 @@ TEXTS = TextConfig(
     navbar=NavbarTexts(),
     task_description=DescriptionText(label="Умови задачi:"),
     button=TapeButtonTexts(
-        set_tape_button="Завантажити стрiчку",
-        step_button="Крок",
-        step_left_button="← Влiво",
-        step_right_button="Вправо →",
-        run_button="Запустити",
-        stop_button="Зупинити",
-        new_rule_button="Додати нове правило",
+        set_tape="Завантажити стрiчку",
+        step="Крок",
+        step_left="← Влiво",
+        step_right="Вправо →",
+        run="Запустити",
+        stop="Зупинити",
+        new_rule="Додати нове правило",
     ),
     errors=ErrorText(
         tape=TapeErrorsText(

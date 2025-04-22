@@ -20,13 +20,15 @@ class TapeTexts:
 
 @dataclass
 class TapeButtonTexts:
-    set_tape_button: str
-    step_button: str
-    step_left_button: str
-    step_right_button: str
-    run_button: str
-    stop_button: str
-    new_rule_button: str
+    set_tape: str
+    step: str
+    step_left: str
+    step_right: str
+    run: str
+    stop: str
+    new_rule: str
+    left_arrow: str = "<"
+    right_arrow: str = ">"
 
 @dataclass
 class RulesTexts:

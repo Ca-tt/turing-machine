@@ -49,6 +49,9 @@ class TapeWidgets:
     alphabet_input: Optional[CTkEntry] = None
     state_label: Optional[CTkLabel] = None
 
+    left_arrow: Optional[CTkButton] = None
+    right_arrow: Optional[CTkButton] = None
+
 
 @dataclass
 class RulesWidgets:

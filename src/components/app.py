@@ -94,7 +94,7 @@ class App:
 
         # ? state label
         widgets.tape.state_label = CTkLabel(
-            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}", anchor="center"
+            self._app, text=f"{TEXTS.tape.state_label}: {TAPE_CONFIG.state}", anchor="center"
         )
         widgets.tape.state_label.grid(
             row=UI.rows.state_label, column=0, columnspan=2, padx=40, pady=5, sticky="we"
@@ -102,10 +102,8 @@ class App:
     
     def open_alphabet_modal(self, event=None, index: int = 0, update_cell_callback: Optional[Callable] = None):
         if self.alphabet_modal is None or not self.alphabet_modal.winfo_exists():
-            # print(f"update_cell_callback (modal)", update_cell_callback)
             self.alphabet_modal = AlphabetModal(app=self._app, modal_title=ALPHABET_MODAL_CONFIG.title, size=ALPHABET_MODAL_CONFIG.size, index=index, update_cell_callback=update_cell_callback) 
             self.alphabet_modal.place_widgets()
-            # self.alphabet_modal.update()
         else:
             self.alphabet_modal.focus()
 

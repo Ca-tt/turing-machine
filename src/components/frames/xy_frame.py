@@ -18,7 +18,11 @@ class XYFrame(customtkinter.CTkFrame):
                  scrollbar_fg_color = None,
                  scrollbar_button_color = None,
                  scrollbar_button_hover_color = None,
+                 scrollbar_shift: int = int(UI.tape_cells.scrollbar.start_position),
                  **kwargs):
+        
+        #? initial scrollbar view shift
+        self.scrollbar_shift = scrollbar_shift
 
         self.parent_frame = customtkinter.CTkFrame(master=master, **kwargs)
         self.bg_color = self.parent_frame.cget("fg_color")
@@ -40,7 +44,7 @@ class XYFrame(customtkinter.CTkFrame):
                                               button_hover_color=scrollbar_button_hover_color, height=scrollbar_width)
         
         #? tweak to manually scroll the view horizontally
-        self.xy_canvas.xview_scroll(int(UI.tape.scrollbar.left_shift), "units")
+        self.xy_canvas.xview_scroll(self.scrollbar_shift, "units")
         
         self.xy_canvas.configure(yscrollcommand=lambda x,y: self.dynamic_scrollbar_vsb(x,y),
                                  xscrollcommand=lambda x,y: self.dynamic_scrollbar_hsb(x,y))
@@ -139,6 +143,14 @@ class XYFrame(customtkinter.CTkFrame):
 
     def lower(self, belowThis=None):
         self.parent_frame.lower(belowThis)
+
+    #? shift scrollbar
+    def move_scrollbar(self, points: int):
+        self.scrollbar_shift = 0
+        self.scrollbar_shift += points
+
+        self.xy_canvas.xview_scroll(self.scrollbar_shift, "units")
+        
         
     def configure(self, **kwargs):
         if "fg_color" in kwargs:

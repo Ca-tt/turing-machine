@@ -10,7 +10,7 @@ from components.widgets import widgets
 from components.frames.xy_frame import XYFrame
 
 # ? configs
-from config.config import UI, TAPE, TEXTS, COLORS
+from config.config import ARROWS_CONFIG, UI, TAPE_CONFIG, TEXTS, COLORS
 
 #? parts
 from components.app import App, app
@@ -25,15 +25,15 @@ class Tape:
     is_running: bool
 
     head_position: int
-    state: str = "q1"
+    state: str = "q0"
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
+            cls._instance.symbols = [TAPE_CONFIG.cell_sign] * TAPE_CONFIG.cells
             cls._instance.cells = []
-            cls._instance.head_position = TAPE.cells // 2
-            cls._instance.state = "q1"
+            cls._instance.head_position = TAPE_CONFIG.cells // 2
+            cls._instance.state = "q0"
             cls._instance.is_running = False
 
         return cls._instance
@@ -50,13 +50,13 @@ class Tape:
         #? cells frame
         widgets.tape.cells_frame = XYFrame(
             self.app,
-            height=UI.tape.height,
-            scrollbar_width=UI.tape.scrollbar.height,
+            height=UI.tape_cells.height,
+            scrollbar_width=UI.tape_cells.scrollbar.height,
         )
         widgets.tape.cells_frame.grid(
             row=UI.rows.cells,
-            column=UI.tape.column.start,
-            columnspan=UI.tape.column.end,
+            column=UI.tape_cells.column.start,
+            columnspan=UI.tape_cells.column.end,
             padx=2,
             sticky="ew",
         )
@@ -74,41 +74,52 @@ class Tape:
         widgets.tape.alphabet_input.grid(
             row=UI.rows.alphabet, column=1, columnspan=3, pady=20, padx=0, sticky="we"
         )
-        widgets.tape.alphabet_input.insert(0, TAPE.alphabet)
+        widgets.tape.alphabet_input.insert(0, TAPE_CONFIG.alphabet)
 
         self.create_cells()
 
         # ? [set tape] signs button
         widgets.tape.buttons.set_tape_button = CTkButton(
-            self.app, text=TEXTS.button.set_tape_button, command=self.set_symbols
+            self.app, text=TEXTS.button.set_tape, command=self.set_symbols
         ).grid(row=UI.rows.alphabet, column=4, padx=5, pady=5)
 
 
+        # ? step [left] / [right] buttons
+        # ? [step], [run], [stop] butons
         widgets.tape.buttons_frame = CTkFrame(self.app, fg_color="transparent")
         widgets.tape.buttons_frame.grid(row=UI.rows.tape_buttons, column=0, columnspan=5)
-
-
-        # ? step [left] / [right] buttons
+        
         widgets.tape.buttons.move_left_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step_left_button, command=self.move_left
+            widgets.tape.buttons_frame, text=TEXTS.button.step_left, command=self.move_left
         ).grid(row=UI.rows.tape_buttons, column=0, padx=5, pady=10)
 
         widgets.tape.buttons.move_right_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step_right_button, command=self.move_right
+            widgets.tape.buttons_frame, text=TEXTS.button.step_right, command=self.move_right
         ).grid(row=UI.rows.tape_buttons, column=1, padx=5, pady=5)
 
-        # ? [step], [run], [stop] butons
         widgets.tape.buttons.step_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step_button, command=self.make_step
+            widgets.tape.buttons_frame, text=TEXTS.button.step, command=self.make_step
         ).grid(row=UI.rows.tape_buttons, column=2, padx=5, pady=5)
 
         widgets.tape.buttons.run_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.run_button, command=self.run
+            widgets.tape.buttons_frame, text=TEXTS.button.run, command=self.run
         ).grid(row=UI.rows.tape_buttons, column=3, padx=5, pady=5)
 
         widgets.tape.buttons.stop_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.stop_button, command=self.stop
+            widgets.tape.buttons_frame, text=TEXTS.button.stop, command=self.stop
         ).grid(row=UI.rows.tape_buttons, column=4, padx=5, pady=5)
+
+        #? arrows
+        widgets.tape.left_arrow = CTkButton(
+            self.app, text=TEXTS.button.left_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(-ARROWS_CONFIG.move_size)
+        )
+        widgets.tape.right_arrow = CTkButton(
+            self.app, text=TEXTS.button.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
+        )
+
+        widgets.tape.left_arrow.grid(row=UI.rows.arrows, column=0, padx=5, pady=5, sticky="w")
+        widgets.tape.right_arrow.grid(row=UI.rows.arrows, column=4, padx=5, pady=5, sticky="e")
+
 
 
     def create_cells(self):
@@ -149,7 +160,7 @@ class Tape:
             #? cells
             cell_label = CTkLabel(
                 widgets.tape.cells_frame,
-                text=TAPE.cell_sign,
+                text=TAPE_CONFIG.cell_sign,
                 width=20,
                 font=("Courier", 14),
                 fg_color=("white", COLORS.tape.cell),
@@ -243,8 +254,9 @@ class Tape:
 
 
     def update_cell(self, index: int, new_symbol: str):
-        print(f"updating cell...")
         self.cells[index].configure(text=new_symbol)
+        self.symbols[index] = new_symbol
+
 
 
     def clear_cells(self):
@@ -253,24 +265,16 @@ class Tape:
             cell.configure(text="_")
 
 
-    def extend_tape(self):
-        #? here will goes all check / ifs
-        pass
-
-    def extend_side(self, side="right"):
-        #! Когда нужно, добавляем ячеек в левую или правую сторону
-        #! Вычисляем это, когда (число знаков из input // 2) > max_tape_cells (21) - tape_position (19)
-        #! или когда (число знаков из input // 2) > tape_position (3) - min_tape_cells (0)
-        pass
-
 
     def run(self):
+        if self.state == "q0":
+            self.state = "q1"
         self.is_running = True
         self.run_until_stop()
 
     def stop(self):
         self.is_running = False
-        pass
+        self.state = "q0"
 
     # ? make tape running infinitely
     def run_until_stop(self):
@@ -281,9 +285,12 @@ class Tape:
             self.make_step()
             self.app.after(500, self.run_until_stop)
         else:
-            self.is_running = False
+            self.stop()
 
     def make_step(self):
+        if self.state == "q0":
+            self.state = "q1"
+    
         self.Rules.read_rules()
 
         current_symbol = self.symbols[self.head_position]

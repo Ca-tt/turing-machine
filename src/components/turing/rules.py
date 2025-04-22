@@ -5,7 +5,7 @@ from customtkinter import (
 )
 
 # ? configs
-from config.config import UI, TAPE, TEXTS, COLORS
+from config.config import UI, TAPE_CONFIG, TEXTS, COLORS
 
 # ? UI
 from components.widgets import widgets
@@ -57,7 +57,7 @@ class Rules:
         # ? [new rule] button
         widgets.rules.add_rule_button = CTkButton(
             self.app,
-            text=TEXTS.button.new_rule_button,
+            text=TEXTS.button.new_rule,
             command= widgets.rules.frame.add_new_field,
         ).grid(row=UI.rows.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
 

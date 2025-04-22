@@ -2,19 +2,19 @@ from config.types.configT import *
 from dataclasses import dataclass
 
 #?  app settings
-
 @dataclass
 class Rows:
     navbar: int = 0
     task_description_label: int = 1
     task_description_input: int = 2
     alphabet: int = 3
-    tape: int = 4
-    tape_buttons: int = 5
-    rules_comments_labels = 6 
-    rules_inputs: int = 7
-    new_rule_button: int = 8
-    state_label: int = 9
+    cell_numbers: int = 4
+    cells: int = 5
+    tape_buttons: int = 6
+    rules_comments_labels = 7 
+    rules_inputs: int = 8
+    new_rule_button: int = 9
+    state_label: int = 10
 
 
 @dataclass
@@ -40,7 +40,6 @@ class CommentsConfig:
     input_height: int = 60 
 
 
-
 UI = UIConfig(
     theme="light",
     colors="green",
@@ -49,9 +48,9 @@ UI = UIConfig(
     rows=Rows(),
     navbar=Navbar(buttons=ButtonSize(width=50, height=20, padx=5, pady=0)),
     tape=TapeUI(
-        height=30,
+        height=60,
         column=ColumnRange(),
-        scrollbar=Scrollbar(height=13, left_shift=4800),
+        scrollbar=Scrollbar(height=13, left_shift=8300),
     ),
 )
 
@@ -59,10 +58,10 @@ TASK_DESCRIPTION = DescriptionConfig()
 COMMENTS = DescriptionConfig()
 
 TAPE = TapeConfig(
-    sign="_",
-    position=34,
+    cell_sign="_",
     state="q1",
-    input="123",
+    alphabet="ab",
+    tape_input="aaabbbbaa",
     cells=75,
     rules=[
         "q0,a -> q1,b,R",

@@ -95,6 +95,9 @@ class XYFrame(customtkinter.CTkFrame):
         
     def onFrameConfigure(self, canvas):
         canvas.configure(scrollregion=canvas.bbox("all"))
+        # canvas.itemconfig(self.window_id, width=self.winfo_reqwidth(), height=self.winfo_reqheight())
+
+
         
     def _on_mousewheel(self, event, widget):
         if self.check_if_master_is_canvas(widget):

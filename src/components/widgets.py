@@ -62,6 +62,13 @@ class CommentsWidgets:
     label: Optional[CTkLabel] = None
 
 
+#? modals
+@dataclass
+class AlphabetModalWidgets:
+    frame: Optional[CTkFrame] = None
+    cells: list[CTkLabel] = field(default_factory=list)
+
+
 @dataclass
 class Widgets:
     navbar: NavbarWidgets = field(default_factory=NavbarWidgets)
@@ -69,6 +76,7 @@ class Widgets:
     tape: TapeWidgets = field(default_factory=TapeWidgets)
     rules: RulesWidgets = field(default_factory=RulesWidgets)
     comments: CommentsWidgets = field(default_factory=CommentsWidgets)
+    alphabetmodal: AlphabetModalWidgets = field(default_factory=AlphabetModalWidgets)
 
 
 widgets = Widgets()

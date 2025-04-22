@@ -106,7 +106,7 @@ class FileSaver:
     def save_to_file(self):
         #? conditions, comments
         self.saved_data.task_conditions = widgets.task_description.input.get("0.0", "end") 
-        self.saved_data.comments = widgets.comments.input.get("0.0", "end") 
+        self.saved_data.comments = widgets.comments.input.get("0.0",  "end") 
 
         #? rules and alphabet
         self.saved_data.alphabet = widgets.tape.alphabet_input.get()

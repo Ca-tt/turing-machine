@@ -29,7 +29,6 @@ class Scrollbar:
 
 
 
-
 @dataclass
 class TapeUI:
     height: int
@@ -38,15 +37,12 @@ class TapeUI:
 
 
 
-
-
-
 # TAPE
 @dataclass
 class TapeConfig:
-    sign: str
-    position: int
-    input: str
+    cell_sign: str
+    alphabet: str
+    tape_input: str
     cells: int
     state: str
     rules: List[str] = field(default_factory=list)

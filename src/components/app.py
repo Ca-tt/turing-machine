@@ -1,3 +1,4 @@
+from typing import Callable, Optional
 from customtkinter import (
     CTk,
     CTkButton,
@@ -9,16 +10,19 @@ from customtkinter import (
     set_default_color_theme,
 )
 
-# ? configs
+#? configs
 from config.config import *
 
-# ? UI
+#? UI
 from components.widgets import widgets
-
+from components.modal import AlphabetModal, Modal, ALPHABET_MODAL_CONFIG, ModalConfig
 
 class App:
     def __init__(self):
         self._app = CTk()
+
+        self.alphabet_modal = None
+
 
     def set_ui_settings(self):
         set_appearance_mode(mode_string=UI.theme)
@@ -29,8 +33,10 @@ class App:
 
         self._app.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1)
 
+
     def open(self):
         self._app.mainloop()
+
 
     def place_widgets(self):
         # ? [navbar]
@@ -93,6 +99,17 @@ class App:
         widgets.tape.state_label.grid(
             row=UI.rows.state_label, column=0, columnspan=2, padx=40, pady=5, sticky="we"
         )
+    
+    def open_alphabet_modal(self, event=None, index: int = 0, update_cell_callback: Optional[Callable] = None):
+        if self.alphabet_modal is None or not self.alphabet_modal.winfo_exists():
+            # print(f"update_cell_callback (modal)", update_cell_callback)
+            self.alphabet_modal = AlphabetModal(app=self._app, modal_title=ALPHABET_MODAL_CONFIG.title, size=ALPHABET_MODAL_CONFIG.size, index=index, update_cell_callback=update_cell_callback) 
+            self.alphabet_modal.place_widgets()
+            # self.alphabet_modal.update()
+        else:
+            self.alphabet_modal.focus()
+
+    
 
 
 app = App()

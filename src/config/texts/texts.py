@@ -57,3 +57,32 @@ class TextConfig:
     modals: ModalTexts
     comments: CommentsTexts
     rules: RulesTexts
+
+
+TEXTS = TextConfig(
+    navbar=NavbarTexts(),
+    task_description=DescriptionText(label="Умови задачi:"),
+    button=TapeButtonTexts(
+        set_tape="Завантажити стрiчку",
+        step="Крок",
+        step_left="← Влiво",
+        step_right="Вправо →",
+        run="Запустити",
+        stop="Зупинити",
+        new_rule="Додати нове правило",
+    ),
+    errors=ErrorText(
+        tape=TapeErrorsText(
+            input=TapeErrorText(
+                too_many_symbols="You've entered too many symbols, please shorten your input or add additional cells"
+            )
+        ),
+        rules=RulesErrorsText(
+            invalid_rule="You rule is uncorrect, please double check it: "
+        ),
+    ),
+    tape=TapeTexts(state_label="Активний стан"),
+    modals=ModalTexts(),
+    comments=CommentsTexts(),
+    rules=RulesTexts(),
+)

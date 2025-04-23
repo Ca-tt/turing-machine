@@ -1,7 +1,7 @@
-from customtkinter import CTkScrollableFrame, CTkEntry, CTkBaseClass
+from customtkinter import CTkScrollableFrame, CTkEntry
 
 # ? config
-from config.config import TAPE_CONFIG
+from config.config import TAPE
 
 
 class VerticalScrollableFrame(CTkScrollableFrame):
@@ -14,14 +14,15 @@ class VerticalScrollableFrame(CTkScrollableFrame):
         self.fields: list[CTkEntry] = []
 
 
-    def place_elements(self, elements):
+    def place_elements(self, elements: list[CTkEntry]):
         for i, element in enumerate(elements):
             element.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="we")
 
 
     #? rules inputs
     def place_fields(self):
-        for i, rule in enumerate(TAPE_CONFIG.rules):
+        print(len(TAPE.rules))
+        for i, rule in enumerate(TAPE.rules):
             widget = CTkEntry(self, width=300)
             widget.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="we")
             widget.insert(0, rule)

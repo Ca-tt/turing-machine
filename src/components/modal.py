@@ -2,17 +2,8 @@ from dataclasses import dataclass, field
 from typing import Callable
 from customtkinter import CTk, CTkToplevel, CTkLabel, CTkButton, CTkFrame, CTkFont
 
-# from components.frames.xy_frame import XYFrame,
 from components.widgets import widgets
-
-
-@dataclass
-class ModalConfig:
-    title: str = "Обрати знак з алфавiту"
-    size: str = "300x150"
-
-
-ALPHABET_MODAL_CONFIG = ModalConfig()
+from config.modals.modalConfigs import ALPHABET_MODAL_CONFIG
 
 
 class Modal(CTkToplevel):
@@ -25,12 +16,30 @@ class Modal(CTkToplevel):
         self.grab_set()
 
 
+    def center_window(self, width: int, height: int, horizontal_offset: int = 0, vertical_offset: int = 0):
+        """ centers the window """
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        
+        x = (screen_width - width) // 2
+        y = (screen_height - height) // 2
+        
+        self.geometry(f"{width}x{height}+{x+horizontal_offset}+{y+vertical_offset}")
+
+
 class AlphabetModal(Modal):
     def __init__(self, index: int, update_cell_callback: Callable, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        #? center + shift down a little
+        self.center_window(ALPHABET_MODAL_CONFIG.width, ALPHABET_MODAL_CONFIG.height, ALPHABET_MODAL_CONFIG.left_offset, ALPHABET_MODAL_CONFIG.top_offset)
+
         self.index = index
         self.update_cell_callback = update_cell_callback
+
+
+   
+
 
     def place_widgets(self):
         widgets.alphabetmodal.frame = CTkFrame(self, height=50)

@@ -5,14 +5,13 @@ from os.path import abspath, join, dirname
 
 from customtkinter import CTkButton
 
-#? types
-from config.types.fileSaverT import *
-
 # ? UI
 from components.widgets import widgets
 
 # ? configs
-from config.config import UI, COLORS, TEXTS
+from config.texts.texts import TEXTS
+from config.colors.colorsConfig import COLORS
+from config.config import *
 
 #? parts
 from components.turing.rules import Rules
@@ -40,13 +39,13 @@ class FileSaver:
             widgets.navbar.frame,
             text=TEXTS.navbar.save_as_button,
             fg_color=COLORS.navbar.buttons,
-            height=UI.navbar.buttons.height,
-            width=UI.navbar.buttons.width,
+            height=NAVBAR.button_height,
+            width=NAVBAR.button_width,
             command=self.save_to_file,
         ).grid(
-            row=UI.rows.navbar,
+            row=ROWS.navbar,
             column=0,
-            padx=UI.navbar.buttons.padx,
+            padx=NAVBAR.button_padx,
             pady=0,
         )
 
@@ -54,13 +53,13 @@ class FileSaver:
             widgets.navbar.frame,
             text=TEXTS.navbar.open_file_button,
             fg_color=COLORS.navbar.buttons,
-            height=UI.navbar.buttons.height,
-            width=UI.navbar.buttons.width,
+            height=NAVBAR.button_height,
+            width=NAVBAR.button_width,
             command=self.load_from_file,
         ).grid(
-            row=UI.rows.navbar,
+            row=ROWS.navbar,
             column=1,
-            padx=UI.navbar.buttons.padx,
+            padx=NAVBAR.button_padx,
             pady=0,
         )
 

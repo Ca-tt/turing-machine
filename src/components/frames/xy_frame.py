@@ -7,7 +7,7 @@ License: MIT
 import customtkinter
 from tkinter import Canvas
 
-from config.config import UI
+from config.config import TAPE, APP_WINDOW
 
 class XYFrame(customtkinter.CTkFrame):
     def __init__(self,
@@ -18,7 +18,7 @@ class XYFrame(customtkinter.CTkFrame):
                  scrollbar_fg_color = None,
                  scrollbar_button_color = None,
                  scrollbar_button_hover_color = None,
-                 scrollbar_shift: int = int(UI.tape_cells.scrollbar.start_position),
+                 scrollbar_shift: int = int(TAPE.scrollbar_offset_left),
                  **kwargs):
         
         #? initial scrollbar view shift

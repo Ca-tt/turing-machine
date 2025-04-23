@@ -1,7 +1,8 @@
-from config.types.configT import *
-from dataclasses import dataclass
+from typing import Literal
+from dataclasses import dataclass, field
 
-#?  app settings
+
+# ?  app settings
 @dataclass
 class Rows:
     navbar: int = 0
@@ -12,112 +13,93 @@ class Rows:
     cell_numbers: int = 5
     cells: int = 6
     tape_buttons: int = 7
-    rules_comments_labels = 8 
+    rules_comments_labels = 8
     rules_inputs: int = 9
     new_rule_button: int = 10
     state_label: int = 11
 
 
 @dataclass
-class UIConfig:
-    theme: Literal["dark", "light"]
-    colors: Literal["green", "blue", "dark-blue"]
-    app_size: str
-    title: str
-    rows: Rows
-    navbar: Navbar
-    tape_cells: TapeCellsConfig
+class APP_WINDOW:
+    theme: Literal["dark", "light"] = "light"
+    colors: Literal["green", "blue", "dark-blue"] = "green"
+    title: str = "Машина Тьюрiнга"
 
+    width: int = 800
+    height: int = 700
+    window_size: str = "800x700"
+    offset_top: int = 0
+    offset_left: int = 0
+
+
+# UI
+@dataclass
+class Navbar:
+    button_width: int = 50
+    button_height: int = 20
+    button_padx: int = 5
+    button_pady: int = 0
+
+
+@dataclass
+class TapeConfig:
+    cell_sign: str = "_"
+    state: str = "q1"
+    alphabet: str = "aaabbbbaababab"
+    cells: int = 75
+    rules: list[str] = field(default_factory=lambda: [
+        "q1,a -> q2,b,R",
+        "q1,b -> q2,a,R",
+        "q2,a -> q3,b,R",
+        "q2,b -> q3,a,R",
+        "q3,a -> q0,b",
+        "q3,b -> q0,a",
+    ])
+
+    first_column: int = 0
+    last_column: int = 5
+    height: int = 60
+    scrollbar_height: int = 13
+    scrollbar_offset_left: int = 8000
 
 
 @dataclass
 class DescriptionConfig:
     padx: int = 20
-    input_height: int = 60 
+    input_height: int = 60
+
 
 @dataclass
 class CommentsConfig:
     padx: int = 20
-    input_height: int = 60 
+    input_height: int = 60
+
 
 @dataclass
 class ArrowsConfig:
     padx: int = 20
-    height: int = 40 
+    height: int = 40
     width: int = 40
-    bg_color: str = "blue" 
+    bg_color: str = "blue"
     move_size: int = 1
 
 
-UI = UIConfig(
-    theme="light",
-    colors="green",
-    app_size="800x700",
-    title="Машина Тюрiнга",
-    rows=Rows(),
-    navbar=Navbar(buttons=ButtonSize(width=50, height=20, padx=5, pady=0)),
-    tape_cells=TapeCellsConfig(
-        height=60,
-        column=ColumnRange(),
-        scrollbar=Scrollbar(),
-    ),
-)
+@dataclass
+class SavedData:
+    alphabet: str = ""
+    rules: dict = field(default_factory=dict)
+    task_conditions: str = ""
+    comments: str = ""
+
+
+# ? CONFIGS
+
+ROWS = Rows()
+NAVBAR = Navbar()
+TAPE = TapeConfig()
+
+APP_WINDOW = APP_WINDOW()
 
 TASK_DESCRIPTION = DescriptionConfig()
 COMMENTS = DescriptionConfig()
 ARROWS_CONFIG = ArrowsConfig()
-
-TAPE_CONFIG = TapeConfig(
-    cell_sign="_",
-    state="q1",
-    alphabet="aaabbbbaababab",
-    cells=75,
-    rules=[
-        "q1,a -> q2,b,R",
-        "q1,b -> q2,a,R",
-        
-        #? test S scenario
-        # "q1,a -> q2,b,S",
-        # "q1,b -> q2,a,S",
-        
-        "q2,a -> q3,b,R",
-        "q2,b -> q3,a,R",
-        
-        "q3,a -> q0,b",
-        "q3,b -> q0,a",
-
-    ],
-)
-
-TEXTS = TextConfig(
-    navbar=NavbarTexts(),
-    task_description=DescriptionText(label="Умови задачi:"),
-    button=TapeButtonTexts(
-        set_tape="Завантажити стрiчку",
-        step="Крок",
-        step_left="← Влiво",
-        step_right="Вправо →",
-        run="Запустити",
-        stop="Зупинити",
-        new_rule="Додати нове правило",
-    ),
-    errors=ErrorText(
-        tape=TapeErrorsText(
-            input=TapeErrorText(
-                too_many_symbols="You've entered too many symbols, please shorten your input or add additional cells"
-            )
-        ),
-        rules=RulesErrorsText(
-            invalid_rule="You rule is uncorrect, please double check it: "
-        ),
-    ),
-    tape=TapeTexts(state_label="Активний стан"),
-    modals=ModalTexts(),
-    comments = CommentsTexts(),
-    rules = RulesTexts(),
-)
-
-COLORS = ColorsConfig(
-    tape=TapeColors(cell="gray20", highlight="yellow"),
-    navbar=NavbarColors(background="white", buttons="gray80"),
-)

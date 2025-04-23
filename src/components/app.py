@@ -12,10 +12,17 @@ from customtkinter import (
 
 #? configs
 from config.config import *
+from config.texts.texts import TEXTS
+from config.colors.colorsConfig import COLORS
+
 
 #? UI
 from components.widgets import widgets
-from components.modal import AlphabetModal, Modal, ALPHABET_MODAL_CONFIG, ModalConfig
+
+from config.modals.modalConfigs import ALPHABET_MODAL_CONFIG
+from components.modal import AlphabetModal
+
+
 
 class App:
     def __init__(self):
@@ -25,13 +32,26 @@ class App:
 
 
     def set_ui_settings(self):
-        set_appearance_mode(mode_string=UI.theme)
-        set_default_color_theme(color_string=UI.colors)
+        set_appearance_mode(mode_string=APP_WINDOW.theme)
+        set_default_color_theme(color_string=APP_WINDOW.colors)
 
-        self._app.title(string=UI.title)
-        self._app.geometry(geometry_string=UI.app_size)
+        self._app.title(string=APP_WINDOW.title)
+        self._app.geometry(geometry_string=APP_WINDOW.window_size)
 
         self._app.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1)
+
+        self.center_window(APP_WINDOW.width, APP_WINDOW.height, 0, 0)
+
+
+    def center_window(self, width: int, height: int, horizontal_offset: int = 0, vertical_offset: int = 0):
+        """ centers the window """
+        screen_width = self._app.winfo_screenwidth()
+        screen_height = self._app.winfo_screenheight()
+        
+        x = (screen_width - width) // 2
+        y = (screen_height - height) // 2
+        
+        self._app.geometry(f"{width}x{height}+{x+horizontal_offset}+{y+vertical_offset}")
 
 
     def open(self):
@@ -42,7 +62,7 @@ class App:
         # ? [navbar]
         widgets.navbar.frame = CTkFrame(self._app, fg_color=COLORS.navbar.background)
         widgets.navbar.frame.grid(
-            row=UI.rows.navbar, column=0, columnspan=6, sticky="ew"
+            row=ROWS.navbar, column=0, columnspan=6, sticky="ew"
         )
 
         # ? quit
@@ -50,13 +70,13 @@ class App:
             widgets.navbar.frame,
             text=TEXTS.navbar.close_app_button,
             fg_color=COLORS.navbar.buttons,
-            height=UI.navbar.buttons.height,
-            width=UI.navbar.buttons.width,
+            height=NAVBAR.button_height,
+            width=NAVBAR.button_width,
             command=self._app.destroy,
         ).grid(
-            row=UI.rows.navbar,
+            row=ROWS.navbar,
             column=2,
-            padx=UI.navbar.buttons.padx,
+            padx=NAVBAR.button_padx,
             pady=0,
         )
 
@@ -65,14 +85,14 @@ class App:
             self._app, text=f"{TEXTS.task_description.label}", anchor="w"
         )
         widgets.task_description.label.grid(
-            row=UI.rows.task_description_label, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(5), sticky="w"
+            row=ROWS.task_description_label, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(5), sticky="w"
         )
         widgets.task_description.input = CTkTextbox(
             self._app,
             height=TASK_DESCRIPTION.input_height
         )
         widgets.task_description.input.grid(
-            row=UI.rows.task_description_input, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(0), sticky="we", 
+            row=ROWS.task_description_input, column=0, columnspan=5, padx=TASK_DESCRIPTION.padx, pady=(0), sticky="we", 
         )
 
         #? comment labels
@@ -80,7 +100,7 @@ class App:
             self._app, text=f"{TEXTS.comments.label}", anchor="e"
         )
         widgets.comments.label.grid(
-            row=UI.rows.rules_comments_labels, column=3, columnspan=3, padx=COMMENTS.padx, pady=(5)
+            row=ROWS.rules_comments_labels, column=3, columnspan=3, padx=COMMENTS.padx, pady=(5)
         )
 
         widgets.comments.input = CTkTextbox(
@@ -88,16 +108,16 @@ class App:
             height=COMMENTS.input_height
         )
         widgets.comments.input.grid(
-            row=UI.rows.rules_inputs, column=3, columnspan=2, padx=COMMENTS.padx, pady=(0), sticky="nwes" 
+            row=ROWS.rules_inputs, column=3, columnspan=2, padx=COMMENTS.padx, pady=(0), sticky="nwes" 
         )
 
 
         # ? state label
         widgets.tape.state_label = CTkLabel(
-            self._app, text=f"{TEXTS.tape.state_label}: {TAPE_CONFIG.state}", anchor="center"
+            self._app, text=f"{TEXTS.tape.state_label}: {TAPE.state}", anchor="center"
         )
         widgets.tape.state_label.grid(
-            row=UI.rows.state_label, column=0, columnspan=2, padx=40, pady=5, sticky="we"
+            row=ROWS.state_label, column=0, columnspan=2, padx=40, pady=5, sticky="we"
         )
     
     def open_alphabet_modal(self, event=None, index: int = 0, update_cell_callback: Optional[Callable] = None):

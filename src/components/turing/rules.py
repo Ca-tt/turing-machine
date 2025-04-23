@@ -5,7 +5,10 @@ from customtkinter import (
 )
 
 # ? configs
-from config.config import UI, TAPE_CONFIG, TEXTS, COLORS
+# ? configs
+from config.texts.texts import TEXTS
+from config.colors.colorsConfig import COLORS
+from config.config import ROWS
 
 # ? UI
 from components.widgets import widgets
@@ -43,12 +46,12 @@ class Rules:
             self.app, text=f"{TEXTS.rules.label}"
         )
         widgets.rules.label.grid(
-            row=UI.rows.rules_comments_labels, column=1, padx=5, pady=(5)
+            row=ROWS.rules_comments_labels, column=1, padx=5, pady=(5)
         )
 
         #? rules fields 
         widgets.rules.frame.place_fields()
-        widgets.rules.frame.grid(row=UI.rows.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
+        widgets.rules.frame.grid(row=ROWS.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
         #? make rule_fields accessible globally
         widgets.rules.fields = widgets.rules.frame.get_fields()
@@ -59,7 +62,7 @@ class Rules:
             self.app,
             text=TEXTS.button.new_rule,
             command= widgets.rules.frame.add_new_field,
-        ).grid(row=UI.rows.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
+        ).grid(row=ROWS.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
 
 
     def get_rules(self):

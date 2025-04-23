@@ -10,10 +10,12 @@ from components.widgets import widgets
 from components.frames.xy_frame import XYFrame
 
 # ? configs
-from config.config import ARROWS_CONFIG, UI, TAPE_CONFIG, TEXTS, COLORS
+from config.texts.texts import TEXTS
+from config.colors.colorsConfig import COLORS
+from config.config import *
 
 #? parts
-from components.app import App, app
+from components.app import app
 from components.turing.rules import Rules
 
 
@@ -30,9 +32,9 @@ class Tape:
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.symbols = [TAPE_CONFIG.cell_sign] * TAPE_CONFIG.cells
+            cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
             cls._instance.cells = []
-            cls._instance.head_position = TAPE_CONFIG.cells // 2
+            cls._instance.head_position = TAPE.cells // 2
             cls._instance.state = "q1"
             cls._instance.is_running = False
 
@@ -50,13 +52,13 @@ class Tape:
         #? cells frame
         widgets.tape.cells_frame = XYFrame(
             self.app,
-            height=UI.tape_cells.height,
-            scrollbar_width=UI.tape_cells.scrollbar.height,
+            height=TAPE.height,
+            scrollbar_width=TAPE.scrollbar_height,
         )
         widgets.tape.cells_frame.grid(
-            row=UI.rows.cells,
-            column=UI.tape_cells.column.start,
-            columnspan=UI.tape_cells.column.end,
+            row=ROWS.cells,
+            column=TAPE.first_column,
+            columnspan=TAPE.last_column,
             padx=2,
             sticky="ew",
         )
@@ -66,48 +68,48 @@ class Tape:
             self.app, text=f"{TEXTS.tape.alphabet_label}"
         )
         widgets.tape.alphabet_label.grid(
-            row=UI.rows.alphabet, column=0, padx=5, pady=(5)
+            row=ROWS.alphabet, column=0, padx=5, pady=(5)
         )
 
         # ? alphabet input
         widgets.tape.alphabet_input = CTkEntry(self.app, width=200)
         widgets.tape.alphabet_input.grid(
-            row=UI.rows.alphabet, column=1, columnspan=3, pady=20, padx=0, sticky="we"
+            row=ROWS.alphabet, column=1, columnspan=3, pady=20, padx=0, sticky="we"
         )
-        widgets.tape.alphabet_input.insert(0, TAPE_CONFIG.alphabet)
+        widgets.tape.alphabet_input.insert(0, TAPE.alphabet)
 
         self.create_cells()
 
         # ? [set tape] signs button
         widgets.tape.buttons.set_tape_button = CTkButton(
             self.app, text=TEXTS.button.set_tape, command=self.set_tape_symbols
-        ).grid(row=UI.rows.alphabet, column=4, padx=5, pady=5)
+        ).grid(row=ROWS.alphabet, column=4, padx=5, pady=5)
 
 
         # ? step [left] / [right] buttons
         # ? [step], [run], [stop] butons
         widgets.tape.buttons_frame = CTkFrame(self.app, fg_color="transparent")
-        widgets.tape.buttons_frame.grid(row=UI.rows.tape_buttons, column=0, columnspan=5)
+        widgets.tape.buttons_frame.grid(row=ROWS.tape_buttons, column=0, columnspan=5)
         
         widgets.tape.buttons.move_left_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.button.step_left, command=self.move_left
-        ).grid(row=UI.rows.tape_buttons, column=0, padx=5, pady=10)
+        ).grid(row=ROWS.tape_buttons, column=0, padx=5, pady=10)
 
         widgets.tape.buttons.move_right_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.button.step_right, command=self.move_right
-        ).grid(row=UI.rows.tape_buttons, column=1, padx=5, pady=5)
+        ).grid(row=ROWS.tape_buttons, column=1, padx=5, pady=5)
 
         widgets.tape.buttons.step_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.button.step, command=self.make_step
-        ).grid(row=UI.rows.tape_buttons, column=2, padx=5, pady=5)
+        ).grid(row=ROWS.tape_buttons, column=2, padx=5, pady=5)
 
         widgets.tape.buttons.run_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.button.run, command=self.run
-        ).grid(row=UI.rows.tape_buttons, column=3, padx=5, pady=5)
+        ).grid(row=ROWS.tape_buttons, column=3, padx=5, pady=5)
 
         widgets.tape.buttons.stop_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.button.stop, command=self.stop
-        ).grid(row=UI.rows.tape_buttons, column=4, padx=5, pady=5)
+        ).grid(row=ROWS.tape_buttons, column=4, padx=5, pady=5)
 
         #? arrows
         widgets.tape.left_arrow = CTkButton(
@@ -117,8 +119,8 @@ class Tape:
             self.app, text=TEXTS.button.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
         )
 
-        widgets.tape.left_arrow.grid(row=UI.rows.arrows, column=0, padx=5, pady=5, sticky="w")
-        widgets.tape.right_arrow.grid(row=UI.rows.arrows, column=4, padx=5, pady=5, sticky="e")
+        widgets.tape.left_arrow.grid(row=ROWS.arrows, column=0, padx=5, pady=5, sticky="w")
+        widgets.tape.right_arrow.grid(row=ROWS.arrows, column=4, padx=5, pady=5, sticky="e")
 
 
 
@@ -152,7 +154,7 @@ class Tape:
                 fg_color=("transparent"),
                 corner_radius=5,
             )
-            cell_number_label.grid(row=UI.rows.cell_numbers, column=i, padx=2)
+            cell_number_label.grid(row=ROWS.cell_numbers, column=i, padx=2)
 
         
         #? create tape cells
@@ -160,13 +162,13 @@ class Tape:
             #? cells
             cell_label = CTkLabel(
                 widgets.tape.cells_frame,
-                text=TAPE_CONFIG.cell_sign,
+                text=TAPE.cell_sign,
                 width=20,
                 font=("Courier", 14),
                 fg_color=("white", COLORS.tape.cell),
                 corner_radius=5,
             )
-            cell_label.grid(row=UI.rows.cells, column=i, padx=2)
+            cell_label.grid(row=ROWS.cells, column=i, padx=2)
             cell_label.bind("<Button-1>", lambda event, index=i: app.open_alphabet_modal(event, index, update_cell_callback=self.update_cell))
             self.cells.append(cell_label)
             
@@ -198,7 +200,7 @@ class Tape:
         self.symbols.insert(new_cell_position, new_cell_sign)
         self.cells.insert(new_cell_position, label)
 
-        label.grid(row=UI.rows.cells, column=new_cell_position, padx=2)
+        label.grid(row=ROWS.cells, column=new_cell_position, padx=2)
 
         self.create_cells()
         self.set_tape_symbols()

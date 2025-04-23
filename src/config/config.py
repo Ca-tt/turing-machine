@@ -45,7 +45,7 @@ class Navbar:
 class TapeConfig:
     cell_sign: str = "_"
     state: str = "q1"
-    alphabet: str = "aaabbbbaababab"
+    alphabet: str = "abcde"
     cells: int = 75
     rules: list[str] = field(default_factory=lambda: [
         "q1,a -> q2,b,R",

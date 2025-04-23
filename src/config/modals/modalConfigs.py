@@ -13,10 +13,12 @@ class ModalConfig:
 class AlphabetModalConfig:
     title: str = "Обрати знак з алфавiту"
     width: int = 300
-    height: int = 300
+    height: int = 200
     size: str = f"{width}x{height}"
     left_offset: int = 0
     top_offset: int = 150
+
+    cells_in_row: int = 6
 
 
 ALPHABET_MODAL_CONFIG = AlphabetModalConfig()

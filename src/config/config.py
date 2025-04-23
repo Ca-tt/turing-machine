@@ -70,14 +70,22 @@ ARROWS_CONFIG = ArrowsConfig()
 TAPE_CONFIG = TapeConfig(
     cell_sign="_",
     state="q1",
-    alphabet="ab",
-    tape_input="aaabbbbaa",
+    alphabet="aaabbbbaababab",
     cells=75,
     rules=[
         "q1,a -> q2,b,R",
         "q1,b -> q2,a,R",
-        "q2,a -> q1,b,R",
-        "q2,b -> q1,a,R",
+        
+        #? test S scenario
+        # "q1,a -> q2,b,S",
+        # "q1,b -> q2,a,S",
+        
+        "q2,a -> q3,b,R",
+        "q2,b -> q3,a,R",
+        
+        "q3,a -> q0,b",
+        "q3,b -> q0,a",
+
     ],
 )
 

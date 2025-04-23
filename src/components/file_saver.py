@@ -173,6 +173,6 @@ class FileSaver:
                     widgets.rules.fields[index].delete(0, "end")
                     widgets.rules.fields[index].insert(0, rule_text)
 
-                self.Tape.set_symbols()
+                self.Tape.set_tape_symbols()
         else:
             print("Load operation canceled.")

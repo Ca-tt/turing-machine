@@ -46,11 +46,11 @@ class Rules:
             row=UI.rows.rules_comments_labels, column=1, padx=5, pady=(5)
         )
 
-        #? rules fields
+        #? rules fields 
         widgets.rules.frame.place_fields()
         widgets.rules.frame.grid(row=UI.rows.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
-        # make rule_fields accessible globally
+        #? make rule_fields accessible globally
         widgets.rules.fields = widgets.rules.frame.get_fields()
         self.fields = widgets.rules.frame.get_fields()
 
@@ -74,32 +74,36 @@ class Rules:
         self.rules = new_rules
 
 
-    # ? goes through rules entries and get rules data
     def read_rules(self):
         self.rules.clear()
-        # print("🚀 ~ self.fields:", self.fields)
 
         for entry in self.fields:
             if entry.get() != "":
-            # print("🐍  entry",entry)
                 rule_text = entry.get().strip()
 
-                # ? split left and right parts by '->'
                 try:
                     parts = rule_text.split("->")
-
-                    # ? make a [state] and a [read_symbol] from the left part
                     left = parts[0].strip()
+                    right = parts[1].strip()
+
                     state, read_symbol = left.split(",")
 
-                    # ? make a [next_state] and [write_symbol] from the right part
-                    right = parts[1].strip()
-                    next_state, write_symbol, move = right.split(",")
+                    # ? Split right-hand side by commas
+                    right_parts = right.split(",")
 
-                    # ? tuple will save only unique values
-                    self.rules[(state, read_symbol)] = (next_state, write_symbol, move)
-                    # print("🐍 self.rules (tuples)", self.rules)
-                except:
-                    print(f"{TEXTS.errors.rules.invalid_rule} {rule_text}")
-        
+                    if len(right_parts) == 3:
+                        next_state, write_symbol, move = right_parts
+                    elif len(right_parts) == 2:
+                        next_state, write_symbol = right_parts
+                        move = "S" # it is unneccessary, but let it be by default 
+                    else:
+                        raise ValueError("Invalid rule format")
+
+                    self.rules[(state.strip(), read_symbol.strip())] = (
+                        next_state.strip(), write_symbol.strip(), move
+                    )
+                except Exception as e:
+                    print(f"{TEXTS.errors.rules.invalid_rule} {rule_text} ({e})")
+
         return self.rules
+

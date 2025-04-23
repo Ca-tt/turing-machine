@@ -80,7 +80,7 @@ class Tape:
 
         # ? [set tape] signs button
         widgets.tape.buttons.set_tape_button = CTkButton(
-            self.app, text=TEXTS.button.set_tape, command=self.set_symbols
+            self.app, text=TEXTS.button.set_tape, command=self.set_tape_symbols
         ).grid(row=UI.rows.alphabet, column=4, padx=5, pady=5)
 
 
@@ -201,10 +201,10 @@ class Tape:
         label.grid(row=UI.rows.cells, column=new_cell_position, padx=2)
 
         self.create_cells()
-        self.set_symbols()
+        self.set_tape_symbols()
 
 
-    def set_symbols(self):
+    def set_tape_symbols(self):
         #? clear previous input
         self.clear_cells()
         symbols = list(widgets.tape.alphabet_input.get())
@@ -238,11 +238,11 @@ class Tape:
 
             self.symbols[cell_position] = symbol
 
-        self.update_cell_texts()
+        self.update_cells()
 
 
     # ? update cells color and symbol
-    def update_cell_texts(self):
+    def update_cells(self):
         for i, symbol in enumerate(self.symbols):
             if i == self.head_position:
                 self.cells[i].configure(fg_color=COLORS.tape.highlight)
@@ -252,6 +252,7 @@ class Tape:
 
         widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
 
+        
 
     def update_cell(self, index: int, new_symbol: str):
         self.cells[index].configure(text=new_symbol)
@@ -267,14 +268,17 @@ class Tape:
 
 
     def run(self):
-        if self.state == "q0":
-            self.state = "q1"
         self.is_running = True
         self.run_until_stop()
 
+
     def stop(self):
         self.is_running = False
-        self.state = "q0"
+
+        if self.state == "q0":
+            self.state = "q1"
+            widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
+
 
     # ? make tape running infinitely
     def run_until_stop(self):
@@ -288,16 +292,13 @@ class Tape:
             self.stop()
 
     def make_step(self):
-        if self.state == "q0":
-            self.state = "q1"
-    
         self.Rules.read_rules()
 
         current_symbol = self.symbols[self.head_position]
 
         if (self.state, current_symbol) in self.Rules.rules:
             # ? get (next state, write symbol, direction) tuple
-            next_state, write_symbol, move = self.Rules.rules[(self.state, current_symbol)]
+            next_state, write_symbol, direction = self.Rules.rules[(self.state, current_symbol)]
 
             # ? set next symbol for the new cell
             self.symbols[self.head_position] = write_symbol
@@ -305,20 +306,38 @@ class Tape:
             # ? update the state
             self.state = next_state
 
-            # ? move cursor right or left
-            if move == "L":
-                self.move_left()
-            elif move == "R":
-                self.move_right()
+            if self.state == "q0":
+                self.stop()
+                self.update_cells()
+                return
 
-            self.update_cell_texts()
+            else:
+                # ? move cursor in a direction, specified by letter (L, R, S (stop))
+                self.move_cursor(direction)
+                self.update_cells()
+
+
+    #? move in direction
+    def move_cursor(self, direction: str):
+        if direction == "L":
+            self.move_left()
+        if direction == "R":
+            self.move_right()
+        if direction == "S":
+            self.dont_move()
+        
+
+    def dont_move(self):
+        self.update_cells()
+        
 
     def move_left(self):
         if self.head_position > 0:
             self.head_position -= 1
-            self.update_cell_texts()
+            self.update_cells()
+
 
     def move_right(self):
         if self.head_position < len(self.symbols) - 1:
             self.head_position += 1
-            self.update_cell_texts()
+            self.update_cells()

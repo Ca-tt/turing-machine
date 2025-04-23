@@ -42,7 +42,7 @@ class TapeCellsConfig:
 class TapeConfig:
     cell_sign: str
     alphabet: str
-    tape_input: str
+    # tape_input: str
     cells: int
     state: str
     rules: List[str] = field(default_factory=list[str])

@@ -20,7 +20,7 @@ class TuringMachineApp:
 
         # #? set data
         self.Rules.read_rules()
-        self.Tape.set_symbols()
+        self.Tape.set_tape_symbols()
 
 
 

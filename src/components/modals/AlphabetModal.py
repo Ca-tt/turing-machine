@@ -2,29 +2,12 @@ from dataclasses import dataclass, field
 from typing import Callable
 from customtkinter import CTk, CTkToplevel, CTkLabel, CTkButton, CTkFrame, CTkFont
 
+#? components
 from components.widgets import widgets
+from components.modals.Modal import Modal
+
+#? configs
 from config.modals.modalConfigs import ALPHABET_MODAL_CONFIG
-
-
-class Modal(CTkToplevel):
-    def __init__(self, app: CTk, modal_title: str = "Modal", size: str = "400x300"):
-        super().__init__(app)
-        self.app = app
-        self.title(modal_title)
-        self.geometry(size)
-
-        self.grab_set()
-
-
-    def center_window(self, width: int, height: int, horizontal_offset: int = 0, vertical_offset: int = 0):
-        """ centers the window """
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        
-        x = (screen_width - width) // 2
-        y = (screen_height - height) // 2
-        
-        self.geometry(f"{width}x{height}+{x+horizontal_offset}+{y+vertical_offset}")
 
 
 class AlphabetModal(Modal):
@@ -45,9 +28,9 @@ class AlphabetModal(Modal):
         self.columnconfigure(0, weight=1)
 
         alphabet_symbols = set(widgets.tape.alphabet_input.get())
-        alphabet_symbols.add("_")
 
-        # alphabet_length: int = len(alphabet_symbols)
+        alphabet_symbols = self.sort_symbols(alphabet_symbols)
+        alphabet_symbols.append("_")
 
         for column_index, symbol in enumerate(alphabet_symbols):
             first_row = 0
@@ -69,9 +52,14 @@ class AlphabetModal(Modal):
             symbol_label.grid(row=next_row, column=column_index, padx=2, pady=5)
             symbol_label.bind("<Button-1>", lambda e, selected_symbol=symbol: self.update_tape_symbol(e, selected_symbol))
 
-    
+
+    @staticmethod
+    def sort_symbols(symbols_set: set):
+        return sorted(symbols_set)
+
 
     def update_tape_symbol(self, event=None, selected_symbol: str = ""):
         self.update_cell_callback(self.index, selected_symbol)
 
         self.destroy()
+

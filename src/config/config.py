@@ -20,7 +20,7 @@ class Rows:
 
 
 @dataclass
-class APP_WINDOW:
+class WindowConfig:
     theme: Literal["dark", "light"] = "light"
     colors: Literal["green", "blue", "dark-blue"] = "green"
     title: str = "Машина Тьюрiнга"
@@ -48,12 +48,12 @@ class TapeConfig:
     alphabet: str = "abcde"
     cells: int = 75
     rules: list[str] = field(default_factory=lambda: [
-        "q1,a -> q2,b,R",
-        "q1,b -> q2,a,R",
-        "q2,a -> q3,b,R",
-        "q2,b -> q3,a,R",
-        "q3,a -> q0,b",
-        "q3,b -> q0,a",
+        "q1,a > q2,b,R",
+        "q1,b > q2,a,R",
+        "q2,a > q3,b,R",
+        "q2,b > q3,a,R",
+        "q3,a > q0,b",
+        "q3,b > q0,a",
     ])
 
     first_column: int = 0
@@ -93,12 +93,11 @@ class SavedData:
 
 
 # ? CONFIGS
-
 ROWS = Rows()
 NAVBAR = Navbar()
 TAPE = TapeConfig()
 
-APP_WINDOW = APP_WINDOW()
+APP_WINDOW = WindowConfig()
 
 TASK_DESCRIPTION = DescriptionConfig()
 COMMENTS = DescriptionConfig()

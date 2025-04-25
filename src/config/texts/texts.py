@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
-from config.texts.ErrorTexts import *
+
 
 @dataclass
 class NavbarTexts:
-    save_as_button: str = "Зберегти як.."
-    open_file_button: str = "Вiдкрити.."
-    close_app_button: str = "Закрити"
+    save_to_file: str = "Зберегти як.."
+    open_file: str = "Вiдкрити.."
+    about_app: str = "Про програму"
+    close_app: str = "Закрити"
+
 
 @dataclass
 class DescriptionText:
@@ -20,69 +22,91 @@ class TapeTexts:
 
 @dataclass
 class TapeButtonTexts:
-    set_tape: str
-    step: str
-    step_left: str
-    step_right: str
-    run: str
-    stop: str
-    new_rule: str
+    set_tape: str = "Завантажити стрiчку"
+    step: str = "Крок"
+    step_left: str = "← Влiво"
+    step_right: str = "Вправо →"
+    run: str = "Запустити"
+    stop: str = "Зупинити"
+    new_rule: str = "Додати нове правило"
     left_arrow: str = "<"
     right_arrow: str = ">"
+
 
 @dataclass
 class RulesTexts:
     label: str = "Правила:"
+
 
 @dataclass
 class CommentsTexts:
     label: str = "Коментарi:"
 
 
-#? modals
+# ? modals
 @dataclass
 class ModalTexts:
     save_to_file_modal_title: str = "Зберегти данi.."
     open_file_modal_title: str = "Вiдкрити файл.."
 
 
-#? final texts config
+
+
 @dataclass
-class TextConfig:
-    navbar: NavbarTexts
-    task_description: DescriptionText
-    button: TapeButtonTexts
-    errors: ErrorText
-    tape: TapeTexts
-    modals: ModalTexts
-    comments: CommentsTexts
-    rules: RulesTexts
+class ErrorTexts:
+    too_many_symbols: str = "You've entered too many symbols, please shorten your input or add additional cells"
+    invalid_rule: str = "You rule is uncorrect, please double check it: "
 
 
-TEXTS = TextConfig(
-    navbar=NavbarTexts(),
-    task_description=DescriptionText(label="Умови задачi:"),
-    button=TapeButtonTexts(
-        set_tape="Завантажити стрiчку",
-        step="Крок",
-        step_left="← Влiво",
-        step_right="Вправо →",
-        run="Запустити",
-        stop="Зупинити",
-        new_rule="Додати нове правило",
-    ),
-    errors=ErrorText(
-        tape=TapeErrorsText(
-            input=TapeErrorText(
-                too_many_symbols="You've entered too many symbols, please shorten your input or add additional cells"
-            )
-        ),
-        rules=RulesErrorsText(
-            invalid_rule="You rule is uncorrect, please double check it: "
-        ),
-    ),
-    tape=TapeTexts(state_label="Активний стан"),
-    modals=ModalTexts(),
-    comments=CommentsTexts(),
-    rules=RulesTexts(),
-)
+@dataclass
+class AboutTexts:
+    app_description: str = field(
+        default="""\
+Ця програма є візуальним емулятором машини Тюрінга — абстрактного обчислювального пристрою, що використовується для моделювання алгоритмів та аналізу теоретичних основ обчислюваності. За її допомогою можна побітово виконати будь-які операції, що можна виконати в звичайних обчислювальних пристроях. Вона надає зручний інтерфейс для створення, налагодження та виконання програм, написаних у формі набору правил переходів для машини Тьюрінга.
+
+Вгорі розташоване меню, що містить кнопки "Зберегти як..", "Відкрити..", "Закрити", "Про програму".
+
+Нижче розташоване поле "Умови задачі". В це поле можна записати будь-який текст. Поле призначене для запису умови задачі, до якої складений алфавіт.
+
+Нижче розташований алфавіт. В нього задаються символи, що можна вибрати у комірки, правіше від стрічки задання алфавіту знаходиться кнопка "Завантажити стрічку", що дає можливість завантажити символи з стрічки для вводу алфавіту прямо в комірки у тому ж порядку.
+
+Потім у центрі інтерфейсу розташована стрічка станів — основний носій даних, яка складається з комірок, кожна з яких може містити символ з обраного алфавіту або бути порожньою (символ підкреслення використовується як умовне позначення порожньої комірки). Виділена клітинка позначає поточне положення головки зчитування/запису машини, в цій програмі вона виділена жовтим кольором.
+
+Основним елементом логіки машини є правила переходів, які задаються у вигляді п’ятиелементного запису:
+qX,S -> qY,T,D, де:
+
+qX — поточний стан машини;
+S — символ, що зараз зчитано зі стрічки;
+qY — новий стан машини після виконання дії;
+T — символ, який потрібно записати замість зчитаного;
+D — напрямок переміщення головки: "L" (вліво), "R" (вправо), або "S" (залишитися на місці).
+
+Ці правила задаються по черзі, і машина послідовно виконує ті, які відповідають поточному стану та символу під головкою. Якщо відповідного правила не знайдено, машина зупиняється.
+
+Програма дозволяє запускати виконання програми повністю або покроково, використовуючи кнопки "Запустити", "Крок", "Вліво" та "Вправо". Кнопка "Зупинити" перериває виконання, а також існує можливість зберігати та відкривати конфігурації через відповідні меню.
+
+Стан "q0" традиційно використовується як стоповий — при досягненні цього стану машина припиняє свою роботу. Особливістю в деяких реалізаціях є використання символу "S" як інструкції "не рухати головку", що дозволяє виконувати логічні дії без зміщення по стрічці.
+
+Праворуч від панелі з заданням правил знаходиться програма поле "Коментарі". В нього можна записати будь-який текст. Поле призначене для запису коментарів для програми.
+
+Таким чином, програма забезпечує повноцінну емуляцію машини Тюрінга із можливістю редагування, запуску та відлагодження алгоритмів у зручній графічній формі. Вона корисна як для навчальних цілей, так і для дослідження обчислювальних процесів на фундаментальному рівні.
+
+Розробка програми: 2025 рік.
+"""
+    )
+
+
+@dataclass
+class TextsConfig:
+    navbar: NavbarTexts = field(default_factory=NavbarTexts)
+    task_description: DescriptionText = field(default_factory=DescriptionText)
+    tape: TapeTexts = field(default_factory=TapeTexts)
+    tape_buttons: TapeButtonTexts = field(default_factory=TapeButtonTexts)
+    rules: RulesTexts = field(default_factory=RulesTexts)
+    comments: CommentsTexts = field(default_factory=CommentsTexts)
+    modals: ModalTexts = field(default_factory=ModalTexts)
+    errors: ErrorTexts = field(default_factory=ErrorTexts)
+    about: AboutTexts = field(default_factory=AboutTexts)
+
+
+TEXTS = TextsConfig()

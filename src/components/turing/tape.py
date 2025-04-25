@@ -82,7 +82,7 @@ class Tape:
 
         # ? [set tape] signs button
         widgets.tape.buttons.set_tape_button = CTkButton(
-            self.app, text=TEXTS.button.set_tape, command=self.set_tape_symbols
+            self.app, text=TEXTS.tape_buttons.set_tape, command=self.set_tape_symbols
         ).grid(row=ROWS.alphabet, column=4, padx=5, pady=5)
 
 
@@ -92,31 +92,31 @@ class Tape:
         widgets.tape.buttons_frame.grid(row=ROWS.tape_buttons, column=0, columnspan=5)
         
         widgets.tape.buttons.move_left_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step_left, command=self.move_left
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step_left, command=self.move_left
         ).grid(row=ROWS.tape_buttons, column=0, padx=5, pady=10)
 
         widgets.tape.buttons.move_right_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step_right, command=self.move_right
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step_right, command=self.move_right
         ).grid(row=ROWS.tape_buttons, column=1, padx=5, pady=5)
 
         widgets.tape.buttons.step_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.step, command=self.make_step
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step, command=self.make_step
         ).grid(row=ROWS.tape_buttons, column=2, padx=5, pady=5)
 
         widgets.tape.buttons.run_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.run, command=self.run
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.run, command=self.run
         ).grid(row=ROWS.tape_buttons, column=3, padx=5, pady=5)
 
         widgets.tape.buttons.stop_button = CTkButton(
-            widgets.tape.buttons_frame, text=TEXTS.button.stop, command=self.stop
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.stop, command=self.stop
         ).grid(row=ROWS.tape_buttons, column=4, padx=5, pady=5)
 
         #? arrows
         widgets.tape.left_arrow = CTkButton(
-            self.app, text=TEXTS.button.left_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(-ARROWS_CONFIG.move_size)
+            self.app, text=TEXTS.tape_buttons.left_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(-ARROWS_CONFIG.move_size)
         )
         widgets.tape.right_arrow = CTkButton(
-            self.app, text=TEXTS.button.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
+            self.app, text=TEXTS.tape_buttons.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
         )
 
         widgets.tape.left_arrow.grid(row=ROWS.arrows, column=0, padx=5, pady=5, sticky="w")

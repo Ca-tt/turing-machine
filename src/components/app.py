@@ -11,6 +11,7 @@ from customtkinter import (
 )
 
 #? configs
+from components.modals.AboutModal import AboutAppModal
 from config.config import *
 from config.texts.texts import TEXTS
 from config.colors.colorsConfig import COLORS
@@ -19,8 +20,8 @@ from config.colors.colorsConfig import COLORS
 #? UI
 from components.widgets import widgets
 
-from config.modals.modalConfigs import ALPHABET_MODAL_CONFIG
-from components.modal import AlphabetModal
+from config.modals.modalConfigs import ALPHABET_MODAL_CONFIG, ABOUT_APP_MODAL
+from components.modals.AlphabetModal import AlphabetModal
 
 
 
@@ -29,6 +30,7 @@ class App:
         self._app = CTk()
 
         self.alphabet_modal = None
+        self.about_app_modal = None
 
 
     def set_ui_settings(self):
@@ -65,17 +67,34 @@ class App:
             row=ROWS.navbar, column=0, columnspan=6, sticky="ew"
         )
 
+
+
+        # ? about app button
+        widgets.navbar.buttons.about_app = CTkButton(
+            widgets.navbar.frame,
+            text=TEXTS.navbar.about_app,
+            fg_color=COLORS.navbar.buttons,
+            height=NAVBAR.button_height,
+            width=NAVBAR.button_width,
+            command=self.open_about_modal,
+        ).grid(
+            row=ROWS.navbar,
+            column=2,
+            padx=NAVBAR.button_padx,
+            pady=0,
+        )
+
         # ? quit
         widgets.navbar.buttons.close_app = CTkButton(
             widgets.navbar.frame,
-            text=TEXTS.navbar.close_app_button,
+            text=TEXTS.navbar.close_app,
             fg_color=COLORS.navbar.buttons,
             height=NAVBAR.button_height,
             width=NAVBAR.button_width,
             command=self._app.destroy,
         ).grid(
             row=ROWS.navbar,
-            column=2,
+            column=3,
             padx=NAVBAR.button_padx,
             pady=0,
         )
@@ -126,6 +145,14 @@ class App:
             self.alphabet_modal.place_widgets()
         else:
             self.alphabet_modal.focus()
+    
+    def open_about_modal(self, event=None):
+        if self.about_app_modal is None or not self.about_app_modal.winfo_exists():
+            self.about_app_modal = AboutAppModal(app=self._app, modal_title=ABOUT_APP_MODAL.title, size=ABOUT_APP_MODAL.size)
+            self.about_app_modal.place_widgets()
+        else:
+            self.about_app_modal.focus()
+
 
     
 

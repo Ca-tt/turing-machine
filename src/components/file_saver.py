@@ -37,7 +37,7 @@ class FileSaver:
         # ? [navbar] buttons
         widgets.navbar.buttons.save_to_file_button = CTkButton(
             widgets.navbar.frame,
-            text=TEXTS.navbar.save_as_button,
+            text=TEXTS.navbar.save_to_file,
             fg_color=COLORS.navbar.buttons,
             height=NAVBAR.button_height,
             width=NAVBAR.button_width,
@@ -51,7 +51,7 @@ class FileSaver:
 
         widgets.navbar.buttons.open_file_button = CTkButton(
             widgets.navbar.frame,
-            text=TEXTS.navbar.open_file_button,
+            text=TEXTS.navbar.open_file,
             fg_color=COLORS.navbar.buttons,
             height=NAVBAR.button_height,
             width=NAVBAR.button_width,
@@ -149,8 +149,11 @@ class FileSaver:
 
             # Handle loading rules into fields
             if loaded_rules is not None:
+                self.Rules.clear_rules()
+                self.Rules.clear_inputs()
+
                 loaded_rules_count = len(loaded_rules)
-                fields_count = len(widgets.rules.fields)
+                fields_count = len(widgets.rules.inputs)
 
                 if loaded_rules_count > fields_count:
                     for index in range(loaded_rules_count - fields_count):
@@ -168,9 +171,9 @@ class FileSaver:
                     write_value = right_part[1]
                     direction = right_part[2]
 
-                    rule_text = f"{old_state},{read_value} -> {new_state},{write_value},{direction}"
-                    widgets.rules.fields[index].delete(0, "end")
-                    widgets.rules.fields[index].insert(0, rule_text)
+                    rule_text = f"{old_state},{read_value} > {new_state},{write_value},{direction}"
+                    widgets.rules.inputs[index].delete(0, "end")
+                    widgets.rules.inputs[index].insert(0, rule_text)
 
                 self.Tape.set_tape_symbols()
         else:

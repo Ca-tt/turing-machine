@@ -10,7 +10,7 @@ class ModalConfig:
 
 
 @dataclass
-class AlphabetModalConfig:
+class AlphabetModal:
     title: str = "Обрати знак з алфавiту"
     width: int = 300
     height: int = 200
@@ -20,5 +20,17 @@ class AlphabetModalConfig:
 
     cells_in_row: int = 6
 
+@dataclass
+class AboutAppModal:
+    title: str = "Про програму"
+    
+    width: int = 600
+    height: int = 350
+    size: str = f"{width}x{height}"
 
-ALPHABET_MODAL_CONFIG = AlphabetModalConfig()
+    left_offset: int = 0
+    top_offset: int = 0
+
+
+ALPHABET_MODAL_CONFIG = AlphabetModal()
+ABOUT_APP_MODAL = AboutAppModal()

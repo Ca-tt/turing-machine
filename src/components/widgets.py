@@ -6,13 +6,16 @@ from customtkinter import CTkButton, CTkEntry, CTkFrame, CTkLabel, CTkTextbox
 #? custom widgets
 from components.frames.scrollable_frame import VerticalScrollableFrame
 from components.frames.xy_frame import XYFrame
+from config.modals.modalConfigs import AboutAppModal
 
 
 @dataclass
 class NavbarButtons:
     save_to_file_button: Optional[CTkButton] = None
     open_file_button: Optional[CTkButton] = None
+    about_app: Optional[CTkButton] = None
     close_app: Optional[CTkButton] = None
+
 
 
 @dataclass
@@ -57,7 +60,7 @@ class TapeWidgets:
 class RulesWidgets:
     frame: Optional[VerticalScrollableFrame] = None
     label: Optional[CTkLabel] = None
-    fields: list[CTkEntry] = field(default_factory=list)
+    inputs: list[CTkEntry] = field(default_factory=list)
     add_rule_button: Optional[CTkButton] = None
 
 class CommentsWidgets:
@@ -71,15 +74,26 @@ class AlphabetModalWidgets:
     frame: Optional[CTkFrame] = None
     cells: list[CTkLabel] = field(default_factory=list)
 
+@dataclass
+class AboutAppModalWidgets:
+    frame: Optional[CTkFrame] = None
+    textbox: Optional[CTkTextbox] = None
+
 
 @dataclass
 class Widgets:
     navbar: NavbarWidgets = field(default_factory=NavbarWidgets)
+    #? text fields
     task_description: DescriptionWidgets = field(default_factory=DescriptionWidgets)
+    comments: CommentsWidgets = field(default_factory=CommentsWidgets)
+    
+    #? main components
     tape: TapeWidgets = field(default_factory=TapeWidgets)
     rules: RulesWidgets = field(default_factory=RulesWidgets)
-    comments: CommentsWidgets = field(default_factory=CommentsWidgets)
+
+    #? modals
     alphabetmodal: AlphabetModalWidgets = field(default_factory=AlphabetModalWidgets)
+    aboutmodal: AboutAppModalWidgets = field(default_factory=AboutAppModalWidgets)
 
 
 widgets = Widgets()

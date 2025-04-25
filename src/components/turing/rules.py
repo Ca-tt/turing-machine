@@ -54,13 +54,13 @@ class Rules:
         widgets.rules.frame.grid(row=ROWS.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
         #? make rule_fields accessible globally
-        widgets.rules.fields = widgets.rules.frame.get_fields()
+        widgets.rules.inputs = widgets.rules.frame.get_fields()
         self.fields = widgets.rules.frame.get_fields()
 
         # ? [new rule] button
         widgets.rules.add_rule_button = CTkButton(
             self.app,
-            text=TEXTS.button.new_rule,
+            text=TEXTS.tape_buttons.new_rule,
             command= widgets.rules.frame.add_new_field,
         ).grid(row=ROWS.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
 
@@ -76,6 +76,14 @@ class Rules:
     def set_rules(self, new_rules):
         self.rules = new_rules
 
+    def clear_rules(self):
+        self.rules = {}
+
+    def clear_inputs(self):
+        for input in widgets.rules.inputs:
+            input.delete(0, "end")
+            input.insert(0, "")
+
 
     def read_rules(self):
         self.rules.clear()
@@ -85,7 +93,7 @@ class Rules:
                 rule_text = entry.get().strip()
 
                 try:
-                    parts = rule_text.split("->")
+                    parts = rule_text.split(">")
                     left = parts[0].strip()
                     right = parts[1].strip()
 
@@ -106,7 +114,7 @@ class Rules:
                         next_state.strip(), write_symbol.strip(), move
                     )
                 except Exception as e:
-                    print(f"{TEXTS.errors.rules.invalid_rule} {rule_text} ({e})")
+                    print(f"{TEXTS.errors.invalid_rule.invalid_rule} {rule_text} ({e})")
 
         return self.rules
 

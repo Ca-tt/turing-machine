@@ -29,11 +29,13 @@ class VerticalScrollableFrame(CTkScrollableFrame):
             self.fields.append(widget)
 
 
-    def add_new_field(self):
-        widget = CTkEntry(self, width=300)
-        widget.grid(row=len(self.widgets), column=0, padx=10, pady=(10, 0), sticky="we")
-        self.widgets.append(widget)
-        self.fields.append(widget)
+    def add_new_field(self) -> CTkEntry:
+        new_input = CTkEntry(self, width=300)
+        new_input.grid(row=len(self.widgets), column=0, padx=10, pady=(10, 0), sticky="we")
+        self.widgets.append(new_input)
+        self.fields.append(new_input)
+
+        return new_input
 
 
     def get_widget_values(self):

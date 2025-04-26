@@ -85,6 +85,13 @@ class Rules:
             input.insert(0, "")
 
 
+    def remove_inputs(self):
+        for input in widgets.rules.inputs:
+            input.grid_remove()
+            
+        widgets.rules.inputs = []
+
+
     def read_rules(self):
         self.rules.clear()
 

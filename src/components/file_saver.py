@@ -151,14 +151,16 @@ class FileSaver:
             if loaded_rules is not None:
                 self.Rules.clear_rules()
                 self.Rules.clear_inputs()
+                self.Rules.remove_inputs()
 
                 loaded_rules_count = len(loaded_rules)
                 fields_count = len(widgets.rules.inputs)
 
-                if loaded_rules_count > fields_count:
-                    for index in range(loaded_rules_count - fields_count):
-                        widgets.rules.frame.add_new_field()
-                        print("New field added! (on load json)")
+                # if loaded_rules_count > fields_count:
+                for index in range(loaded_rules_count - fields_count):
+                    new_input = widgets.rules.frame.add_new_field()
+                    widgets.rules.inputs.append(new_input)
+                    print("New field added! (on load json)")
 
                 # Insert loaded rules into fields
                 for index, (left_part, right_part) in enumerate(loaded_rules.items()):

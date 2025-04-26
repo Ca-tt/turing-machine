@@ -25,6 +25,7 @@ class TapeButtons:
     move_right_button: Optional[CTkButton] = None
     step_button: Optional[CTkButton] = None
     run_button: Optional[CTkButton] = None
+    pause_button: Optional[CTkButton] = None
     stop_button: Optional[CTkButton] = None
 
 

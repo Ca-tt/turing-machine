@@ -23,11 +23,12 @@ class TapeTexts:
 @dataclass
 class TapeButtonTexts:
     set_tape: str = "Завантажити стрiчку"
-    step: str = "Крок"
-    step_left: str = "← Влiво"
-    step_right: str = "Вправо →"
-    run: str = "Запустити"
-    stop: str = "Зупинити"
+    step: str = "Крок ⏭"
+    step_left: str = "⬅ Влiво"
+    step_right: str = "Вправо ➡"
+    run: str = "Запустити ▶"
+    pause: str = "Пауза ⏸"
+    stop: str = "Стоп ⏹"
     new_rule: str = "Додати нове правило"
     left_arrow: str = "<"
     right_arrow: str = ">"

@@ -25,9 +25,9 @@ class WindowConfig:
     colors: Literal["green", "blue", "dark-blue"] = "green"
     title: str = "Машина Тьюрiнга"
 
-    width: int = 800
+    width: int = 900
     height: int = 700
-    window_size: str = "800x700"
+    window_size: str = f"{width}x{height}"
     offset_top: int = 0
     offset_left: int = 0
 
@@ -45,15 +45,21 @@ class Navbar:
 class TapeConfig:
     cell_sign: str = "_"
     state: str = "q1"
-    alphabet: str = "abcde"
+    alphabet: str = "bacbbbcaaabcccababac"
     cells: int = 75
     rules: list[str] = field(default_factory=lambda: [
         "q1,a > q2,b,R",
         "q1,b > q2,a,R",
+        "q1,c > q2,a,R",
         "q2,a > q3,b,R",
-        "q2,b > q3,a,R",
-        "q3,a > q0,b",
-        "q3,b > q0,a",
+        "q2,b > q3,c,R",
+        "q2,c > q3,a,R",
+        "q3,a > q4,b,R",
+        "q3,b > q4,c,R",
+        "q3,c > q4,a,R",
+        # "q3,c > q0,a",
+        # "q3,a > q0,b",
+        # "q3,b > q0,a",
     ])
 
     first_column: int = 0

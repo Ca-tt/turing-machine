@@ -1,3 +1,5 @@
+from enum import Enum
+
 from customtkinter import (
     CTkButton,
     CTkEntry,
@@ -18,25 +20,34 @@ from config.config import *
 from components.app import app
 from components.turing.rules import Rules
 
+#? running states
+class TapeState(Enum):
+    RUNNING = "run"
+    STOPPED = "stop"
+    PAUSED  = "pause"
+
 
 class Tape:
     _instance = None
 
-    cells: list[CTkLabel]
-    symbols: list[str]
-    is_running: bool
+    head_position: int = TAPE.cells // 2 # center of the tape 
+    symbols: list[str] = [TAPE.cell_sign] * TAPE.cells
+    
+    cells: list[CTkLabel] = []
+    is_running: TapeState = TapeState.STOPPED
 
-    head_position: int
-    state: str = "q1"
+    state: str = TAPE.state
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
+
             cls._instance.cells = []
-            cls._instance.head_position = TAPE.cells // 2
-            cls._instance.state = "q1"
-            cls._instance.is_running = False
+            cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
+            cls._instance.is_running = TapeState.STOPPED
+
+            cls._instance.head_position = TAPE.cells // 2 
+            cls._instance.state = TAPE.state
 
         return cls._instance
 
@@ -85,42 +96,50 @@ class Tape:
             self.app, text=TEXTS.tape_buttons.set_tape, command=self.set_tape_symbols
         ).grid(row=ROWS.alphabet, column=4, padx=5, pady=5)
 
+        #? arrow left
+        widgets.tape.left_arrow = CTkButton(
+            self.app, text=TEXTS.tape_buttons.left_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(-ARROWS_CONFIG.move_size)
+        ).grid(row=ROWS.arrows, column=0, padx=5, pady=5, sticky="w")
+        
+        #? arrow right
+        widgets.tape.right_arrow = CTkButton(
+            self.app, text=TEXTS.tape_buttons.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
+        ).grid(row=ROWS.arrows, column=4, padx=5, pady=5, sticky="e")
 
-        # ? step [left] / [right] buttons
-        # ? [step], [run], [stop] butons
+        #? buttons
         widgets.tape.buttons_frame = CTkFrame(self.app, fg_color="transparent")
         widgets.tape.buttons_frame.grid(row=ROWS.tape_buttons, column=0, columnspan=5)
         
+        #? left
         widgets.tape.buttons.move_left_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step_left, command=self.move_left
         ).grid(row=ROWS.tape_buttons, column=0, padx=5, pady=10)
 
+        #? right
         widgets.tape.buttons.move_right_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step_right, command=self.move_right
         ).grid(row=ROWS.tape_buttons, column=1, padx=5, pady=5)
 
+        #? step
         widgets.tape.buttons.step_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.tape_buttons.step, command=self.make_step
         ).grid(row=ROWS.tape_buttons, column=2, padx=5, pady=5)
 
+        #? run
         widgets.tape.buttons.run_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.tape_buttons.run, command=self.run
         ).grid(row=ROWS.tape_buttons, column=3, padx=5, pady=5)
 
+        #? pause
+        widgets.tape.buttons.pause_button = CTkButton(
+            widgets.tape.buttons_frame, text=TEXTS.tape_buttons.pause, command=self.pause
+        ).grid(row=ROWS.tape_buttons, column=4, padx=5, pady=5)
+        
+        #? stop
         widgets.tape.buttons.stop_button = CTkButton(
             widgets.tape.buttons_frame, text=TEXTS.tape_buttons.stop, command=self.stop
-        ).grid(row=ROWS.tape_buttons, column=4, padx=5, pady=5)
+        ).grid(row=ROWS.tape_buttons, column=5, padx=5, pady=5)
 
-        #? arrows
-        widgets.tape.left_arrow = CTkButton(
-            self.app, text=TEXTS.tape_buttons.left_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(-ARROWS_CONFIG.move_size)
-        )
-        widgets.tape.right_arrow = CTkButton(
-            self.app, text=TEXTS.tape_buttons.right_arrow, width=ARROWS_CONFIG.width, height=ARROWS_CONFIG.height, fg_color=ARROWS_CONFIG.bg_color, command=lambda: widgets.tape.cells_frame.move_scrollbar(ARROWS_CONFIG.move_size)
-        )
-
-        widgets.tape.left_arrow.grid(row=ROWS.arrows, column=0, padx=5, pady=5, sticky="w")
-        widgets.tape.right_arrow.grid(row=ROWS.arrows, column=4, padx=5, pady=5, sticky="e")
 
 
 
@@ -252,14 +271,12 @@ class Tape:
                 self.cells[i].configure(fg_color=("white", COLORS.tape.cell))
             self.cells[i].configure(text=symbol)
 
-        widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
-
+        self.update_ui_state()
         
 
     def update_cell(self, index: int, new_symbol: str):
         self.cells[index].configure(text=new_symbol)
         self.symbols[index] = new_symbol
-
 
 
     def clear_cells(self):
@@ -268,30 +285,46 @@ class Tape:
             cell.configure(text="_")
 
 
+    def update_ui_state(self):
+        widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
+
 
     def run(self):
-        self.is_running = True
+        self.is_running = TapeState.RUNNING
         self.run_until_stop()
 
 
     def stop(self):
-        self.is_running = False
+        self.is_running = TapeState.STOPPED
+        self.state = "q1"
+        self.update_ui_state()
+
+
+    def pause(self):
+        self.is_running = TapeState.PAUSED
 
         if self.state == "q0":
             self.state = "q1"
-            widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
+            self.update_ui_state()
 
 
     # ? make tape running infinitely
     def run_until_stop(self):
         if (
-            self.is_running
+            self.is_running == TapeState.RUNNING
             and (self.state, self.symbols[self.head_position]) in self.Rules.rules
         ):
             self.make_step()
             self.app.after(500, self.run_until_stop)
+        
+        #? pause
+        elif self.is_running == TapeState.PAUSED:
+            self.pause()
+        
+        #? or stop
         else:
             self.stop()
+ 
 
     def make_step(self):
         self.Rules.read_rules()
@@ -309,7 +342,7 @@ class Tape:
             self.state = next_state
 
             if self.state == "q0":
-                self.stop()
+                self.pause()
                 self.update_cells()
                 return
 

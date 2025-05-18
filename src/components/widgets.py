@@ -11,6 +11,7 @@ from config.modals.modalConfigs import AboutAppModal
 
 @dataclass
 class NavbarButtons:
+    new_file: Optional[CTkButton] = None
     save_to_file_button: Optional[CTkButton] = None
     open_file_button: Optional[CTkButton] = None
     about_app: Optional[CTkButton] = None
@@ -80,6 +81,14 @@ class AboutAppModalWidgets:
     frame: Optional[CTkFrame] = None
     textbox: Optional[CTkTextbox] = None
 
+@dataclass
+class StopModalWidgets:
+    label: Optional[CTkLabel] = None
+
+@dataclass
+class FinishModalWidgets:
+    label: Optional[CTkLabel] = None
+
 
 @dataclass
 class Widgets:
@@ -95,6 +104,10 @@ class Widgets:
     #? modals
     alphabetmodal: AlphabetModalWidgets = field(default_factory=AlphabetModalWidgets)
     aboutmodal: AboutAppModalWidgets = field(default_factory=AboutAppModalWidgets)
+    stop_modal: StopModalWidgets = field(default_factory=StopModalWidgets)
+    finish_modal: FinishModalWidgets = field(default_factory=FinishModalWidgets)
+     
+
 
 
 widgets = Widgets()

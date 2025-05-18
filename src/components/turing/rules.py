@@ -1,3 +1,4 @@
+from pydoc import text
 from customtkinter import (
     CTkButton,
     CTkEntry,
@@ -8,7 +9,7 @@ from customtkinter import (
 # ? configs
 from config.texts.texts import TEXTS
 from config.colors.colorsConfig import COLORS
-from config.config import ROWS
+from config.config import ROWS, TAPE
 
 # ? UI
 from components.widgets import widgets
@@ -50,7 +51,11 @@ class Rules:
         )
 
         #? rules fields 
-        widgets.rules.frame.place_fields()
+
+        for rule in TAPE.rules:
+            widgets.rules.frame.add_new_field(text=rule)
+
+        # widgets.rules.frame.place_fields()
         widgets.rules.frame.grid(row=ROWS.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
         #? make rule_fields accessible globally

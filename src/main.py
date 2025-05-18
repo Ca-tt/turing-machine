@@ -32,4 +32,4 @@ if __name__ == "__main__":
     turing_machine = TuringMachineApp()
 
     #? runs the window
-    app.open()
+    app.open_app()

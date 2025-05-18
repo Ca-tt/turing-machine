@@ -35,8 +35,8 @@ class WindowConfig:
 # UI
 @dataclass
 class Navbar:
-    button_width: int = 50
-    button_height: int = 20
+    buttons_width: int = 50
+    buttons_height: int = 20
     button_padx: int = 5
     button_pady: int = 0
 

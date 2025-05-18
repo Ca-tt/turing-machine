@@ -10,17 +10,18 @@ from components.modals.Modal import Modal
 from config.modals.modalConfigs import ABOUT_APP_MODAL
 from config.texts.texts import TEXTS
 
-class AboutAppModal(Modal):
-    def __init__(self, *args, **kwargs):
+class TextModal(Modal):
+    def __init__(self, text: str, width: int, height: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.text = text
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.center_window(width=ABOUT_APP_MODAL.width, height=ABOUT_APP_MODAL.height) 
+        self.center_window(width=width, height=height) 
 
 
-    def place_widgets(self):
-        widgets.aboutmodal.textbox = CTkTextbox(self, font=(CTkFont(family="Arial", size=14)))
-        widgets.aboutmodal.textbox.grid(row=0, column=0, sticky="nwse")
-        widgets.aboutmodal.textbox.insert(0.0, TEXTS.about.app_description)
+    def place_widgets(self, widget):
+        widget = CTkLabel(self, text=self.text, font=(CTkFont(family="Arial", size=14)))
+        widget.grid(row=0, column=0, sticky="nwse")

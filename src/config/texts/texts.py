@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class NavbarTexts:
+    new_file: str = "Новий файл"
     save_to_file: str = "Зберегти як.."
     open_file: str = "Вiдкрити.."
     about_app: str = "Про програму"
@@ -49,6 +50,8 @@ class CommentsTexts:
 class ModalTexts:
     save_to_file_modal_title: str = "Зберегти данi.."
     open_file_modal_title: str = "Вiдкрити файл.."
+    stop_modal_description: str = "Виконання програми зупинено вручну!" 
+    finish_modal_description: str = "Алгорит виконано!" 
 
 
 

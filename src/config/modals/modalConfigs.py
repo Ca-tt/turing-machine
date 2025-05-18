@@ -31,6 +31,32 @@ class AboutAppModal:
     left_offset: int = 0
     top_offset: int = 0
 
+@dataclass
+class StopModal:
+    title: str = "Програму зупинено"
+    
+    width: int = 280
+    height: int = 100
+    size: str = f"{width}x{height}"
+
+    left_offset: int = 0
+    top_offset: int = 0
+
+@dataclass
+class FinishModal:
+    title: str = "Програма завершила роботу"
+    
+    width: int = 280
+    height: int = 100
+    size: str = f"{width}x{height}"
+
+    left_offset: int = 0
+    top_offset: int = 0
+
 
 ALPHABET_MODAL_CONFIG = AlphabetModal()
 ABOUT_APP_MODAL = AboutAppModal()
+
+STOP_MODAL_CONFIG = StopModal()
+FINIS_HMODAL_CONFIG = FinishModal()
+

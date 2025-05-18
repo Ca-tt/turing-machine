@@ -1,4 +1,4 @@
-from tkinter import filedialog
+from tkinter import END, filedialog
 from re import sub
 import json
 from os.path import abspath, join, dirname
@@ -6,6 +6,7 @@ from os.path import abspath, join, dirname
 from customtkinter import CTkButton
 
 # ? UI
+from components import app
 from components.widgets import widgets
 
 # ? configs
@@ -26,6 +27,8 @@ class FileSaver:
         self.default_file_path = join(files_dir, json_file_name)
         self.file_path = self.default_file_path
 
+        self.app = app
+
         #? data to save
         self.saved_data = SavedData()
 
@@ -33,18 +36,35 @@ class FileSaver:
         self.Rules = Rules()
         self.Tape = Tape()
 
+
     def create_widgets(self):
-        # ? [navbar] buttons
+        # ? new file button
+        widgets.navbar.buttons.new_file = CTkButton(
+            widgets.navbar.frame,
+            text=TEXTS.navbar.new_file,
+            fg_color=COLORS.navbar.buttons,
+            height=NAVBAR.buttons_height,
+            width=NAVBAR.buttons_width,
+            command=self.reset_input_fields,
+        ).grid(
+            row=ROWS.navbar,
+            column=0,
+            padx=NAVBAR.button_padx,
+            pady=0,
+        )
+
+
+        # ? save to file button
         widgets.navbar.buttons.save_to_file_button = CTkButton(
             widgets.navbar.frame,
             text=TEXTS.navbar.save_to_file,
             fg_color=COLORS.navbar.buttons,
-            height=NAVBAR.button_height,
-            width=NAVBAR.button_width,
+            height=NAVBAR.buttons_height,
+            width=NAVBAR.buttons_width,
             command=self.save_to_file,
         ).grid(
             row=ROWS.navbar,
-            column=0,
+            column=1,
             padx=NAVBAR.button_padx,
             pady=0,
         )
@@ -53,12 +73,12 @@ class FileSaver:
             widgets.navbar.frame,
             text=TEXTS.navbar.open_file,
             fg_color=COLORS.navbar.buttons,
-            height=NAVBAR.button_height,
-            width=NAVBAR.button_width,
+            height=NAVBAR.buttons_height,
+            width=NAVBAR.buttons_width,
             command=self.load_from_file,
         ).grid(
             row=ROWS.navbar,
-            column=1,
+            column=2,
             padx=NAVBAR.button_padx,
             pady=0,
         )
@@ -180,3 +200,15 @@ class FileSaver:
                 self.Tape.set_tape_symbols()
         else:
             print("Load operation canceled.")
+
+
+    #? clear fields
+    def reset_input_fields(self):
+        self.Tape.clear_cells()
+        self.Tape.clear_alphabet()
+        
+        self.Rules.clear_inputs()
+        self.Rules.clear_rules()
+        
+        self.app.app.clear_textareas()
+        

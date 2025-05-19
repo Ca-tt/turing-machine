@@ -22,13 +22,13 @@ from components.app import App, app
 class Rules:
     __rules_instance = None
 
-    fields: list[CTkEntry] = []
+    rules_inputs: list[CTkEntry] = []
     rules: dict[str, tuple[str, str]] = {}
 
     def __new__(cls, *args, **kwargs):
         if cls.__rules_instance is None:
             cls.__rules_instance = super().__new__(cls)
-            cls.__rules_instance.fields = []
+            cls.__rules_instance.rules_inputs = []
             cls.__rules_instance.rules = {}
 
         return cls.__rules_instance
@@ -59,8 +59,7 @@ class Rules:
         widgets.rules.frame.grid(row=ROWS.rules_inputs, column=0, columnspan=3, pady=10, padx=20, sticky="we")
 
         #? make rule_fields accessible globally
-        widgets.rules.inputs = widgets.rules.frame.get_fields()
-        self.fields = widgets.rules.frame.get_fields()
+        self.update_rules()
 
         # ? [new rule] button
         widgets.rules.add_rule_button = CTkButton(
@@ -69,14 +68,15 @@ class Rules:
             command= widgets.rules.frame.add_new_field,
         ).grid(row=ROWS.new_rule_button, column=0, columnspan=3, padx=100, pady=5, sticky="we")
 
+    def update_rules(self):
+        widgets.rules.inputs = widgets.rules.frame.get_fields()
+        self.rules_inputs = widgets.rules.frame.get_fields()
 
     def get_rules(self):
         return self.rules
     
-
     def get_fields(self):
-        return self.fields
-
+        return self.rules_inputs
 
     def set_rules(self, new_rules):
         self.rules = new_rules
@@ -95,12 +95,14 @@ class Rules:
             input.grid_remove()
             
         widgets.rules.inputs = []
+        self.clear_rules()
 
 
     def read_rules(self):
         self.rules.clear()
+        self.update_rules()
 
-        for entry in self.fields:
+        for entry in self.rules_inputs:
             if entry.get() != "":
                 rule_text = entry.get().strip()
 
@@ -116,17 +118,25 @@ class Rules:
 
                     if len(right_parts) == 3:
                         next_state, write_symbol, move = right_parts
+
                     elif len(right_parts) == 2:
                         next_state, write_symbol = right_parts
-                        move = "S" # it is unneccessary, but let it be by default 
+                        move = "S" 
+                    
                     else:
                         raise ValueError("Invalid rule format")
 
                     self.rules[(state.strip(), read_symbol.strip())] = (
                         next_state.strip(), write_symbol.strip(), move
                     )
+                    
                 except Exception as e:
                     print(f"{TEXTS.errors.invalid_rule.invalid_rule} {rule_text} ({e})")
 
+        # print("self.rules (read_rules): ", self.rules)
         return self.rules
 
+
+    def remove_rules_inputs(self):
+        for input in self.rules_inputs:
+            input.grid_remove()

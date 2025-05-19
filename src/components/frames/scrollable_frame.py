@@ -23,9 +23,8 @@ class VerticalScrollableFrame(CTkScrollableFrame):
             width=50,
             command=lambda: self.recreate_inputs(index=index, input=input, operation="add"),
         )
-        self.add_buttons.append(add_button)
         add_button.grid(row=index, column=1, padx=10)
-
+        self.add_buttons.append(add_button)
     
 
     def add_minus_button(self, index: int, input: CTkEntry):
@@ -35,9 +34,8 @@ class VerticalScrollableFrame(CTkScrollableFrame):
             width=50,
             command=lambda: self.recreate_inputs(index=index, input=input, operation="remove"),
         )
-        self.remove_buttons.append(remove_button)
         remove_button.grid(row=index, column=2, padx=10)
-
+        self.remove_buttons.append(remove_button)
 
 
     def add_new_field(self, text: str = "") -> CTkEntry:
@@ -52,12 +50,14 @@ class VerticalScrollableFrame(CTkScrollableFrame):
         self.add_minus_button(index=input_index, input=new_input)
         
         self.inputs.append(new_input)
+        
         return new_input
 
 
     def get_widget_values(self) -> list[str]:
         """ returns list of input values """
         widget_values = []
+
         for widget in self.inputs:
             widget_values.append(widget.get())
 
@@ -73,9 +73,9 @@ class VerticalScrollableFrame(CTkScrollableFrame):
         temp_inputs = self.inputs
         
         for input, add_button, remove_button in zip(self.inputs, self.add_buttons, self.remove_buttons):
-            input.grid_forget()
-            add_button.grid_forget()
-            remove_button.grid_forget()
+            input.grid_remove()
+            add_button.grid_remove()
+            remove_button.grid_remove()
 
         self.inputs = []
         self.add_buttons = []
@@ -99,6 +99,15 @@ class VerticalScrollableFrame(CTkScrollableFrame):
     def get_fields(self):
         return self.inputs
 
-
     def get_widgets(self):
         return self.inputs
+    
+    def remove_all_widgets(self) -> None:
+        for input, add_button, remove_button in zip(self.inputs, self.add_buttons, self.remove_buttons):
+            input.grid_remove()
+            add_button.grid_remove()
+            remove_button.grid_remove()
+
+        self.inputs = []
+        self.add_buttons = []
+        self.remove_buttons = []

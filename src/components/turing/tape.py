@@ -21,6 +21,8 @@ from config.config import *
 from components.app import app
 from components.turing.rules import Rules
 
+
+
 #? running states
 class TapeState(Enum):
     RUNNING = "run"
@@ -36,7 +38,7 @@ class Tape:
     symbols: list[str] = [TAPE.cell_sign] * TAPE.cells
     
     cells: list[CTkLabel] = []
-    is_running: TapeState = TapeState.STOPPED
+    is_running: TapeState = TapeState.PAUSED
 
     state: str = TAPE.state
 
@@ -46,7 +48,7 @@ class Tape:
 
             cls._instance.cells = []
             cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
-            cls._instance.is_running = TapeState.STOPPED
+            cls._instance.is_running = TapeState.PAUSED
 
             cls._instance.head_position = TAPE.cells // 2 
             cls._instance.state = TAPE.state
@@ -281,48 +283,42 @@ class Tape:
         self.symbols[index] = new_symbol
 
 
-
-
     def update_ui_state(self):
         widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
 
 
     def run(self):
         self.is_running = TapeState.RUNNING
+        self.set_active_state()
         self.run_until_stop()
+
+
+    def pause(self):
+        self.is_running = TapeState.PAUSED
+        self.update_ui_state()
 
 
     def stop(self):
         self.is_running = TapeState.STOPPED
-        self.state = "q1"
         self.update_ui_state()
         self.app.open_stop_modal()
 
 
     def finish(self):
-        self.is_running = TapeState.FINISHED
-        self.state = "q1"
+        """ opens modal, sets state to q1 manually """
         self.update_ui_state()
         self.app.open_finish_modal()
 
 
-    def pause(self):
-        self.is_running = TapeState.PAUSED
-
-        if self.state == "q0":
-            self.state = "q1"
-            self.update_ui_state()
-
-
-    # ? make tape running infinitely
     def run_until_stop(self):
+        #? run
         if (
             self.is_running == TapeState.RUNNING
             and (self.state, self.symbols[self.head_position]) in self.Rules.rules
         ):
             self.make_step()
             self.app._app.after(500, self.run_until_stop)
-        
+            
         #? pause
         elif self.is_running == TapeState.PAUSED:
             self.pause()
@@ -334,32 +330,40 @@ class Tape:
         else: 
             self.finish()
 
- 
+
+    def set_active_state(self):
+        if self.state == "q0":
+            self.state = "q1"
+            self.update_ui_state()
+        self.is_running = TapeState.RUNNING 
+
 
     def make_step(self):
+        self.set_active_state()
         self.Rules.read_rules()
-
+        
         current_symbol = self.symbols[self.head_position]
 
+        # print("state:" ,self.state)
+
         if (self.state, current_symbol) in self.Rules.rules:
-            # ? get (next state, write symbol, direction) tuple
             next_state, write_symbol, direction = self.Rules.rules[(self.state, current_symbol)]
 
-            # ? set next symbol for the new cell
-            self.symbols[self.head_position] = write_symbol
+            # print("🐍 direction: ",direction)
+            # print("🐍 write_symbol: ",write_symbol)
+            # print("🐍 next_state: ",next_state)
 
-            # ? update the state
+            self.symbols[self.head_position] = write_symbol
             self.state = next_state
 
             #? finish algorithm
             if self.state == "q0":
-                self.pause()
+                self.is_running = TapeState.FINISHED
                 self.update_cells()
                 return
 
             else:
-                # ? move cursor in a direction, specified by letter (L, R, S (stop))
-                self.move_cursor(direction)
+                self.move_cursor(direction) #? (L, R, S )
                 self.update_cells()
 
 
@@ -367,8 +371,10 @@ class Tape:
     def move_cursor(self, direction: str):
         if direction == "L":
             self.move_left()
+
         if direction == "R":
             self.move_right()
+        
         if direction == "S":
             self.dont_move()
         

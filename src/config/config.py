@@ -45,23 +45,15 @@ class Navbar:
 class TapeConfig:
     cell_sign: str = "_"
     state: str = "q1"
-    alphabet: str = "01"
+    alphabet: str = ""
     cells: int = 75
     rules: list[str] = field(default_factory=lambda: [
-        "q1,a > q2,b,R",
-        "q1,b > q2,a,R",
-        "q1,c > q2,a,R",
-        "q2,a > q3,b,R",
-        "q2,b > q3,c,R",
-        "q2,c > q3,a,R",
-        "q3,a > q4,b,R",
-        "q3,b > q4,c,R",
-        "q3,c > q4,a,R",
-        # "q3,c > q0,a",
-        # "q3,a > q0,b",
-        # "q3,b > q0,a",
+        # "q1,1 > q1,0,R", 
+        # "q1,0 > q1,1,R", 
+        # "q1,_ > q2,_,L", 
+        # "q2,0 > q2,0,L", 
+        # "q2,1 > q0,1,S", 
     ])
-
     first_column: int = 0
     last_column: int = 5
     height: int = 60

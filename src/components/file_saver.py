@@ -45,7 +45,7 @@ class FileSaver:
             fg_color=COLORS.navbar.buttons,
             height=NAVBAR.buttons_height,
             width=NAVBAR.buttons_width,
-            command=self.reset_input_fields,
+            command=self.reset_widgets,
         ).grid(
             row=ROWS.navbar,
             column=0,
@@ -129,9 +129,8 @@ class FileSaver:
 
         #? rules and alphabet
         self.saved_data.alphabet = widgets.tape.alphabet_input.get()
-        self.Rules.read_rules()  # Update rules before saving
+        self.Rules.read_rules()  
 
-        # Ask the user for a file location
         file_path = filedialog.asksaveasfilename(
             defaultextension=".json",
             filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
@@ -145,13 +144,14 @@ class FileSaver:
             print("Save operation canceled.")
 
     def load_from_file(self):
-        # Ask the user to select a file to load
         file_path = filedialog.askopenfilename(
             filetypes=[("JSON files", "*.json"), ("All Files", "*.*")],
             title=TEXTS.modals.open_file_modal_title
         )
 
         if file_path:
+            self.reset_widgets()
+
             self.file_path = file_path
             input_string, loaded_rules, task_conditions, comments = self.load_from_json()
 
@@ -169,10 +169,6 @@ class FileSaver:
 
             # Handle loading rules into fields
             if loaded_rules is not None:
-                self.Rules.clear_rules()
-                self.Rules.clear_inputs()
-                self.Rules.remove_inputs()
-
                 loaded_rules_count = len(loaded_rules)
                 fields_count = len(widgets.rules.inputs)
 
@@ -198,17 +194,20 @@ class FileSaver:
                     widgets.rules.inputs[index].insert(0, rule_text)
 
                 self.Tape.set_tape_symbols()
+                self.Rules.read_rules()
         else:
             print("Load operation canceled.")
 
 
     #? clear fields
-    def reset_input_fields(self):
+    def reset_widgets(self):
         self.Tape.clear_cells()
         self.Tape.clear_alphabet()
-        
-        self.Rules.clear_inputs()
+
         self.Rules.clear_rules()
+        self.Rules.remove_inputs()
         
         self.app.app.clear_textareas()
+        widgets.rules.frame.remove_all_widgets()
+
         

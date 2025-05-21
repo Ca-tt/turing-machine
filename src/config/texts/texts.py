@@ -18,7 +18,7 @@ class DescriptionText:
 @dataclass
 class TapeTexts:
     alphabet_label: str = "Алфавiт:"
-    state_label: str = "Активний стан:"
+    state_label: str = "Активний стан"
 
 
 @dataclass
@@ -51,7 +51,7 @@ class ModalTexts:
     save_to_file_modal_title: str = "Зберегти данi.."
     open_file_modal_title: str = "Вiдкрити файл.."
     stop_modal_description: str = "Виконання програми зупинено вручну!" 
-    finish_modal_description: str = "Алгорит виконано!" 
+    finish_modal_description: str = "Алгоритм виконано!" 
 
 
 

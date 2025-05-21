@@ -24,11 +24,18 @@ from components.turing.rules import Rules
 
 
 #? running states
-class TapeState(Enum):
+class RunningState(Enum):
     RUNNING = "run"
     STOPPED = "stop"
     PAUSED  = "pause"
     FINISHED  = "finished"
+
+@dataclass
+class State:
+    stop: str = "q0"
+    active: str = "q1"
+
+state = State()
 
 
 class Tape:
@@ -38,7 +45,7 @@ class Tape:
     symbols: list[str] = [TAPE.cell_sign] * TAPE.cells
     
     cells: list[CTkLabel] = []
-    is_running: TapeState = TapeState.PAUSED
+    is_running: RunningState = RunningState.PAUSED
 
     state: str = TAPE.state
 
@@ -48,7 +55,7 @@ class Tape:
 
             cls._instance.cells = []
             cls._instance.symbols = [TAPE.cell_sign] * TAPE.cells
-            cls._instance.is_running = TapeState.PAUSED
+            cls._instance.is_running = RunningState.PAUSED
 
             cls._instance.head_position = TAPE.cells // 2 
             cls._instance.state = TAPE.state
@@ -267,7 +274,7 @@ class Tape:
 
 
     # ? update cells color and symbol
-    def update_cells(self):
+    def update_cells(self) -> None:
         for i, symbol in enumerate(self.symbols):
             if i == self.head_position:
                 self.cells[i].configure(fg_color=COLORS.tape.highlight)
@@ -278,88 +285,86 @@ class Tape:
         self.update_ui_state()
         
 
-    def update_cell(self, index: int, new_symbol: str):
+    def update_cell(self, index: int, new_symbol: str) -> None:
         self.cells[index].configure(text=new_symbol)
         self.symbols[index] = new_symbol
 
 
-    def update_ui_state(self):
+    def update_ui_state(self) -> None:
         widgets.tape.state_label.configure(text=f"{TEXTS.tape.state_label}: {self.state}")
 
 
-    def run(self):
-        self.is_running = TapeState.RUNNING
+    def run(self) -> None:
+        self.is_running = RunningState.RUNNING
         self.set_active_state()
         self.run_until_stop()
 
 
-    def pause(self):
-        self.is_running = TapeState.PAUSED
+    def pause(self) -> None:
+        self.is_running = RunningState.PAUSED
         self.update_ui_state()
 
 
-    def stop(self):
-        self.is_running = TapeState.STOPPED
+    def stop(self) -> None:
+        """ stops tape from running, prepares active state """
+        self.is_running = RunningState.STOPPED
+        self.state = state.active
         self.update_ui_state()
         self.app.open_stop_modal()
 
 
-    def finish(self):
-        """ opens modal, sets state to q1 manually """
+    def finish(self) -> None:
+        """ opens modal, sets state to active manually """
+        self.update_cells()
         self.update_ui_state()
+        # self.app.open_finish_modal()
         self.app.open_finish_modal()
 
 
-    def run_until_stop(self):
+    def run_until_stop(self) -> None:
         #? run
         if (
-            self.is_running == TapeState.RUNNING
+            self.is_running == RunningState.RUNNING
             and (self.state, self.symbols[self.head_position]) in self.Rules.rules
         ):
             self.make_step()
             self.app._app.after(500, self.run_until_stop)
             
         #? pause
-        elif self.is_running == TapeState.PAUSED:
+        elif self.is_running == RunningState.PAUSED:
             self.pause()
         
         #? or stop
-        elif self.is_running == TapeState.STOPPED:
+        elif self.is_running == RunningState.STOPPED:
             self.stop()
 
         else: 
             self.finish()
 
 
-    def set_active_state(self):
-        if self.state == "q0":
-            self.state = "q1"
+    def set_active_state(self) -> None:
+        if self.state == state.stop:
+            self.state = state.active
             self.update_ui_state()
-        self.is_running = TapeState.RUNNING 
+        self.is_running = RunningState.RUNNING 
 
 
-    def make_step(self):
+    def make_step(self) -> None:
         self.set_active_state()
         self.Rules.read_rules()
         
         current_symbol = self.symbols[self.head_position]
 
-        # print("state:" ,self.state)
-
         if (self.state, current_symbol) in self.Rules.rules:
             next_state, write_symbol, direction = self.Rules.rules[(self.state, current_symbol)]
-
-            # print("🐍 direction: ",direction)
-            # print("🐍 write_symbol: ",write_symbol)
-            # print("🐍 next_state: ",next_state)
 
             self.symbols[self.head_position] = write_symbol
             self.state = next_state
 
             #? finish algorithm
-            if self.state == "q0":
-                self.is_running = TapeState.FINISHED
-                self.update_cells()
+            if self.state == state.stop:
+                self.is_running = RunningState.FINISHED
+                self.finish()
                 return
 
             else:
@@ -368,7 +373,7 @@ class Tape:
 
 
     #? move in direction
-    def move_cursor(self, direction: str):
+    def move_cursor(self, direction: str) -> None:
         if direction == "L":
             self.move_left()
 
@@ -379,26 +384,26 @@ class Tape:
             self.dont_move()
         
 
-    def dont_move(self):
+    def dont_move(self) -> None:
         self.update_cells()
         
 
-    def move_left(self):
+    def move_left(self) -> None:
         if self.head_position > 0:
             self.head_position -= 1
             self.update_cells()
 
 
-    def move_right(self):
+    def move_right(self) -> None:
         if self.head_position < len(self.symbols) - 1:
             self.head_position += 1
             self.update_cells()
 
     
-    def clear_cells(self):
+    def clear_cells(self) -> None:
         for i, cell in enumerate(self.cells):
             self.symbols[i] = "_"
             cell.configure(text="_")
 
-    def clear_alphabet(self):
+    def clear_alphabet(self) -> None:
         widgets.tape.alphabet_input.delete(0, END)
